@@ -1,6 +1,14 @@
 {
   "root": true,
   "ignorePatterns": ["projects/**/*"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  },
   "overrides": [
     {
       "files": ["*.ts"],
@@ -28,6 +36,13 @@
             "style": "kebab-case"
           }
         ],
+        "@angular-eslint/component-class-suffix": [
+          "error",
+          {
+            "suffixes": ["Component", "Page"]
+          }
+        ],
+
         "@typescript-eslint/explicit-function-return-type": "error"
       }
     },
