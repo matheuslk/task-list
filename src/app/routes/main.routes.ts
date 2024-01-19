@@ -5,10 +5,14 @@ export const MAIN_ROUTES: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home',
+    redirectTo: 'listas',
   },
   {
-    path: 'home',
+    path: 'listas',
+    component: HomePage,
+  },
+  {
+    path: 'lista/:id',
     component: HomePage,
   },
 ];

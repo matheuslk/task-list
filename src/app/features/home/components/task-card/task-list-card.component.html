@@ -1,0 +1,37 @@
+<nz-card
+  class="task-list-card"
+  (click)="navigateToTaskList()"
+  [nzTitle]="taskList.title"
+  [nzExtra]="header"
+>
+  <div class="task-list-card__content">
+    <div *ngFor="let task of taskList.tasks.slice(0, 5)" class="task">
+      <p class="task__description">{{ task.description }}</p>
+      <nz-tag class="task__tag" nzColor="default">A fazer</nz-tag>
+    </div>
+  </div>
+  <div class="task-list-card__footer">
+    <nz-color-block
+      *ngFor="let bgColor of bgColors"
+      [nzColor]="bgColor"
+      nzSize="large"
+      class="task-list-card__color-block"
+    ></nz-color-block>
+  </div>
+</nz-card>
+<ng-template #header>
+  <div class="task-list-card__header">
+    <nz-badge
+      class="task-list-card__badge"
+      [nzCount]="taskList.tasks.length"
+      [nzOverflowCount]="5"
+      nzStandalone
+    ></nz-badge>
+    <span
+      class="task-list-card__pin-icon icon"
+      nz-icon
+      nzType="pushpin"
+      nzTheme="outline"
+    ></span>
+  </div>
+</ng-template>
