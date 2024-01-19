@@ -1,0 +1,60 @@
+.task-list-card {
+  &__header {
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+  }
+  &__footer {
+    display: none;
+    justify-content: end;
+    column-gap: 8px;
+    margin-top: 24px;
+  }
+  &__pin-icon {
+    display: none;
+    margin-left: 12px;
+  }
+  &__color-block {
+    border-radius: 6px;
+  }
+  &--fixed {
+    .on-hover();
+  }
+}
+
+.task-list-card:hover {
+  cursor: pointer;
+  .on-hover();
+}
+
+.task {
+  display: flex;
+  justify-content: space-between;
+  &__description {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0px;
+  }
+  &__tag {
+    margin-left: 12px;
+    margin-right: 0px;
+  }
+}
+
+.on-hover() {
+  .task-list-card {
+    &__footer {
+      display: flex;
+    }
+    &__pin-icon {
+      display: inline-block;
+    }
+  }
+}
+
