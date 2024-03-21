@@ -1,0 +1,36 @@
+<nz-card
+  *ngIf="{ isFixed: (isFixed$ | async) } as data"
+  class="task-list-card"
+  [ngClass]="{ 'task-list-card--fixed': data.isFixed }"
+  [nzTitle]="taskList.title"
+  [nzExtra]="header"
+  (click)="handleOpenModal()"
+>
+  <div class="task-list-card__content">
+    <div *ngFor="let task of taskList.tasks?.slice(0, 5)" class="task">
+      <p class="task__description">{{ task.description }}</p>
+      <nz-tag class="task__tag" nzColor="default">A fazer</nz-tag>
+    </div>
+  </div>
+  <div class="task-list-card__footer">
+    <app-color-popover
+      (visibilityChange)="isFixed$.next($event)"
+    ></app-color-popover>
+  </div>
+</nz-card>
+<ng-template #header>
+  <div class="task-list-card__header">
+    <nz-badge
+      class="task-list-card__badge"
+      [nzCount]="taskList.tasks?.length"
+      [nzOverflowCount]="5"
+      nzStandalone
+    ></nz-badge>
+    <span
+      class="task-list-card__pin-icon icon icon_md"
+      nz-icon
+      nzType="pushpin"
+      nzTheme="outline"
+    ></span>
+  </div>
+</ng-template>

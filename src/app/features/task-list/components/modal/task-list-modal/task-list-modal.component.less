@@ -1,0 +1,30 @@
+.task-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+  cursor: pointer;
+  &__check {
+    display: none;
+  }
+  &__delete-icon {
+    margin-left: auto;
+    display: none;
+  }
+}
+
+.task:hover {
+  .task {
+    &__check {
+      display: inline-flex;
+    }
+    &__delete-icon {
+      display: inline-block;
+    }
+  }
+}

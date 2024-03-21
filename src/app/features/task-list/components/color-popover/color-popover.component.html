@@ -1,0 +1,31 @@
+<span
+  class="popover icon icon_md"
+  nz-icon
+  nzType="bg-colors"
+  nzTheme="outline"
+  nz-popover
+  nzPopoverTitle="Escolha uma cor"
+  nzPopoverPlacement="bottom"
+  nzPopoverTrigger="click"
+  [nzPopoverContent]="popoverContent"
+  (nzPopoverVisibleChange)="isVisible$.next($event)"
+  (click)="handleClick($event)"
+></span>
+
+<ng-template #popoverContent>
+  <div class="popover__content">
+    <nz-color-block
+      *ngFor="let color of colors"
+      class="popover__color-block"
+      [nzColor]="color"
+      (nzOnClick)="handleColorSelect()"
+    ></nz-color-block>
+    <span
+      class="icon icon_md"
+      nz-icon
+      nzType="stop"
+      nzTheme="outline"
+      (click)="handleColorClear()"
+    ></span>
+  </div>
+</ng-template>
