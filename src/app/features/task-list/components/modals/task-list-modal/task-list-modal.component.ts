@@ -1,18 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewChecked,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -29,12 +20,11 @@ import {
   exhaustMap,
   filter,
   map,
-  of,
   switchMap,
   tap,
 } from 'rxjs';
 import { ITaskListModalData } from '../../../data/interfaces/modal-data.interface';
-import { ITask } from '../../../data/interfaces/task.interface';
+import { ITask } from '../../../data/interfaces/task-list.interface';
 
 @Component({
   selector: 'app-task-list-modal',
@@ -90,12 +80,12 @@ export class TaskListModalComponent implements OnInit {
   }
 
   setForm(): void {
-    if (!this.nzModalData.taskList.tasks) {
-      return;
-    }
-    this.nzModalData.taskList.tasks.forEach(() => {
-      this.taskChecksForm.push(this.fb.control(false) as FormControl);
-    });
+    // if (!this.nzModalData.taskList.tasks) {
+    //   return;
+    // }
+    // this.nzModalData.taskList.tasks.forEach(() => {
+    //   this.taskChecksForm.push(this.fb.control(false) as FormControl);
+    // });
   }
 
   handleUpdateTaskDescription(description: string): void {

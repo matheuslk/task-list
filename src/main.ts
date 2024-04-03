@@ -8,8 +8,10 @@ import { IconDefinition } from '@ant-design/icons-angular';
 import {
   BgColorsOutline,
   PushpinOutline,
+  PushpinFill,
   StopOutline,
   DeleteOutline,
+  PlusOutline,
 } from '@ant-design/icons-angular/icons';
 import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -19,8 +21,10 @@ import { MAIN_ROUTES } from './app/routes';
 const icons: IconDefinition[] = [
   BgColorsOutline,
   PushpinOutline,
+  PushpinFill,
   StopOutline,
   DeleteOutline,
+  PlusOutline,
 ];
 
 registerLocaleData(pt);

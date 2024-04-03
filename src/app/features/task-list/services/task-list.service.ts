@@ -1,11 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { EMPTY, Observable, of } from 'rxjs';
+import { Observable, delay, filter, map, of } from 'rxjs';
 
 import { LocalStorageKeysEnum } from 'src/app/shared/data/enums/local-storage-keys.enum';
 import { LocalStorageService } from 'src/app/shared/services/local-storage.service';
-import { ITask, ITaskList } from '../data/interfaces/task.interface';
-import { TASK_LISTS } from '../data/mocks/task-list.mock';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  ITask,
+  ITaskList,
+  ITaskListResponse,
+} from '../data/interfaces/task-list.interface';
+import { TASK_LISTS } from '../data/mocks/task-list.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -19,59 +23,53 @@ export class TaskListService {
     ]);
   }
 
-  getTaskLists$(): Observable<ITaskList[]> {
-    const taskLists = this.localStorageService.getItem<ITaskList[]>(
-      LocalStorageKeysEnum.TASK_LISTS,
-    );
-    const tasks = this.localStorageService.getItem<ITask[]>(
-      LocalStorageKeysEnum.TASKS,
-    );
-    if (!taskLists) {
-      return EMPTY;
+  getTaskLists$(body?: { title: string }): Observable<ITaskListResponse> {
+    let taskLists =
+      this.localStorageService.getItem<ITaskList[]>(
+        LocalStorageKeysEnum.TASK_LISTS,
+      ) ?? [];
+    const tasks =
+      this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
+      [];
+
+    if (body?.title) {
+      taskLists = taskLists.filter((list) => list.title.includes(body.title));
     }
 
-    return of(
-      taskLists.map((list) => {
+    taskLists = taskLists.map((list) => {
+      return {
+        ...list,
+        tasks: tasks?.filter((task) => task.task_id === list.id),
+      };
+    });
+
+    return of({
+      taskLists: taskLists.filter((list) => !list.isFixed),
+      fixed: taskLists.filter((list) => list.isFixed),
+    }).pipe(delay(2000));
+  }
+
+  getTaskList$(id: string): Observable<ITaskList> {
+    return this.getTaskLists$().pipe(
+      map((response) => [...response.taskLists, ...response.fixed]),
+      map((taskLists) => taskLists.find((list) => list.id === id)),
+      filter((taskList) => !!taskList),
+      map((taskList) => {
         return {
-          ...list,
-          tasks: tasks?.filter((task) => task.task_id === list.id),
-        };
+          ...taskList,
+          tasks: taskList?.tasks?.filter(
+            (task) => task.task_id === taskList.id,
+          ),
+        } as ITaskList;
       }),
     );
   }
 
-  getTaskList$(id: string): Observable<ITaskList> {
-    const taskLists = this.localStorageService.getItem<ITaskList[]>(
-      LocalStorageKeysEnum.TASK_LISTS,
-    );
-    const tasks = this.localStorageService.getItem<ITask[]>(
-      LocalStorageKeysEnum.TASKS,
-    );
-
-    if (!taskLists) {
-      return EMPTY;
-    }
-
-    const taskList = taskLists.find((list) => list.id === id);
-
-    if (!taskList) {
-      return EMPTY;
-    }
-
-    return of({
-      ...taskList,
-      tasks: tasks?.filter((task) => task.task_id === taskList.id),
-    });
-  }
-
-  storeTaskList$(storeTaskList: ITaskList): Observable<never> {
-    const taskLists = this.localStorageService.getItem<ITaskList[]>(
-      LocalStorageKeysEnum.TASK_LISTS,
-    );
-
-    if (!taskLists) {
-      return EMPTY;
-    }
+  storeTaskList$(storeTaskList: ITaskList): Observable<ITaskList> {
+    const taskLists =
+      this.localStorageService.getItem<ITaskList[]>(
+        LocalStorageKeysEnum.TASK_LISTS,
+      ) ?? [];
 
     storeTaskList.id = uuidv4();
     taskLists.push(storeTaskList);
@@ -81,25 +79,22 @@ export class TaskListService {
       taskLists,
     );
 
-    return EMPTY;
+    return of(storeTaskList);
   }
 
-  updateTaskList$(updatedTaskList: ITaskList): Observable<never> {
-    const taskLists = this.localStorageService.getItem<ITaskList[]>(
-      LocalStorageKeysEnum.TASK_LISTS,
-    );
-
-    if (!taskLists) {
-      return EMPTY;
-    }
+  updateTaskList$(updatedTaskList: ITaskList): Observable<ITaskList> {
+    const taskLists =
+      this.localStorageService.getItem<ITaskList[]>(
+        LocalStorageKeysEnum.TASK_LISTS,
+      ) ?? [];
 
     const updatedTaskListIndex = taskLists.findIndex(
       (list) => list.id === updatedTaskList.id,
     );
 
-    if (updatedTaskListIndex === -1) {
-      return EMPTY;
-    }
+    // if (updatedTaskListIndex === -1) {
+    //   return EMPTY;
+    // }
 
     taskLists[updatedTaskListIndex] = updatedTaskList;
 
@@ -108,6 +103,6 @@ export class TaskListService {
       taskLists,
     );
 
-    return EMPTY;
+    return of(updatedTaskList);
   }
 }

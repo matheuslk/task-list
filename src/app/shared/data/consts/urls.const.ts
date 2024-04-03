@@ -1,3 +1,3 @@
 export const URLS = {
-  ['TASK-LIST']: 'tarefas',
+  ['HOME']: 'tarefas',
 };

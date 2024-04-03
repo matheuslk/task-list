@@ -1,0 +1,15 @@
+<div class="section" *ngIf="taskLists.length" nz-row [nzGutter]="[24, 16]">
+  <div *ngIf="title" class="section__title-wrapper" nz-col [nzSpan]="24">
+    <h3 class="section__title" nz-typography>{{ title }}</h3>
+    <span
+      *ngIf="icon && showIcon"
+      class="icon_md"
+      nz-icon
+      [nzTheme]="iconTheme"
+      [nzType]="icon"
+    ></span>
+  </div>
+  <div *ngFor="let taskList of taskLists" nz-col [nzSpan]="8">
+    <app-task-list-card [taskList]="taskList"></app-task-list-card>
+  </div>
+</div>

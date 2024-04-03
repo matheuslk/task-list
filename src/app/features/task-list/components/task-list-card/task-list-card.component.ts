@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzTagModule } from 'ng-zorro-antd/tag';
-import { BehaviorSubject } from 'rxjs';
-import { ITaskListModalData } from '../../data/interfaces/modal-data.interface';
-import { ITaskList } from '../../data/interfaces/task.interface';
+import { BehaviorSubject, combineLatest, map, shareReplay } from 'rxjs';
+import { ITaskList } from '../../data/interfaces/task-list.interface';
+import { HomeStoreService } from '../../state/home/home.store.service';
+import { TaskListEffectsService } from '../../state/task-list/task-list.effects.service';
 import { ColorPopoverComponent } from '../color-popover/color-popover.component';
-import { TaskListModalComponent } from '../modal/task-list-modal/task-list-modal.component';
 
 @Component({
   selector: 'app-task-list-card',
@@ -27,20 +27,29 @@ import { TaskListModalComponent } from '../modal/task-list-modal/task-list-modal
   styleUrls: ['./task-list-card.component.less'],
 })
 export class TaskListCardComponent {
-  constructor(private modalService: NzModalService) {}
-
   @Input({ required: true }) taskList: ITaskList;
 
+  homeStoreService = inject(HomeStoreService);
+  taskListEffectsService = inject(TaskListEffectsService);
+
+  private isLoadingList$ = this.homeStoreService
+    .selectTaskLists$()
+    .pipe(map((taskLists) => taskLists.isLoading));
+  private isUpdatingList$ = this.homeStoreService.selectIsUpdatingList$();
+
+  isLoading$ = combineLatest([this.isLoadingList$, this.isUpdatingList$]).pipe(
+    map(([isLoadingList, isUpdatingList]) => isLoadingList || isUpdatingList),
+    shareReplay(),
+  );
   isFixed$ = new BehaviorSubject(false);
 
-  handleOpenModal(): void {
-    const modalData: ITaskListModalData = {
-      taskList: this.taskList,
-    };
-    this.modalService.create({
-      nzTitle: 'Edite suas tarefas',
-      nzContent: TaskListModalComponent,
-      nzData: modalData,
-    });
+  pinTaskList(): void {
+    this.taskListEffectsService.updateTaskList(
+      {
+        ...this.taskList,
+        isFixed: !this.taskList.isFixed,
+      },
+      true,
+    );
   }
 }

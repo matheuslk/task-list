@@ -1,0 +1,19 @@
+<div
+  *ngIf="{
+    disableActions: (disableActions$ | async)
+  } as data"
+  class="actions"
+>
+  <app-search
+    class="actions__search"
+    [disabled]="!!data.disableActions"
+  ></app-search>
+  <button
+    nz-button
+    nzType="primary"
+    nzShape="circle"
+    [disabled]="!!data.disableActions"
+  >
+    <span nz-icon nzType="plus"></span>
+  </button>
+</div>
