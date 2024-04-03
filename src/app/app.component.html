@@ -1,1 +1,1 @@
-<router-outlet *ngIf="(isLoadingData$ | async) === false"></router-outlet>
+<router-outlet *ngIf="hasData$ | async"></router-outlet>

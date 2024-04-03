@@ -1,0 +1,14 @@
+<nz-layout class="layout">
+  <nz-header class="header">
+    <h2 class="header__title">Task List</h2>
+  </nz-header>
+  <nz-content class="content">
+    <div class="search" nz-row nzJustify="center">
+      <div nz-col [nzSpan]="12">
+        <app-task-lists-actions></app-task-lists-actions>
+      </div>
+    </div>
+    <app-task-lists></app-task-lists>
+  </nz-content>
+  <nz-footer class="footer">Task List ©2023</nz-footer>
+</nz-layout>

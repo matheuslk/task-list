@@ -1,9 +1,15 @@
 import { TaskListColor } from '../types/task-list-color.type';
 
+export interface ITaskListResponse {
+  taskLists: ITaskList[];
+  fixed: ITaskList[];
+}
+
 export interface ITaskList {
   id?: string;
   title: string;
-  tasks?: ITask[];
+  tasks: ITask[];
+  isFixed: boolean;
   bgColor?: TaskListColor;
 }
 
@@ -12,6 +18,4 @@ export interface ITask {
   description: string;
   isFinished: boolean;
   task_id: string;
-  deadlineDate?: string;
-  repeatAfterDays?: number;
 }

@@ -3,16 +3,16 @@ import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject, take, tap } from 'rxjs';
+import { HomePage } from './features/task-list/home.page';
 import { TaskListService } from './features/task-list/services/task-list.service';
 import { TaskService } from './features/task-list/services/task.service';
-import { TaskListsPage } from './features/task-list/task-lists.page';
 import { LocalStorageKeysEnum } from './shared/data/enums/local-storage-keys.enum';
 import { LocalStorageService } from './shared/services/local-storage.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, TaskListsPage],
+  imports: [CommonModule, RouterModule, HomePage],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less'],
 })
@@ -21,8 +21,8 @@ export class AppComponent implements OnInit {
   taskService = inject(TaskService);
   localStorageService = inject(LocalStorageService);
 
-  isLoadingData$ = new BehaviorSubject(true);
-  private loadData$ = this.isLoadingData$.asObservable().pipe(
+  hasData$ = new BehaviorSubject(false);
+  private loadDataListener$ = this.hasData$.asObservable().pipe(
     take(1),
     tap(() => {
       if (this.localStorageService.getItem(LocalStorageKeysEnum.TASK_LISTS)) {
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
       this.taskService.load();
     }),
     tap(() => {
-      this.isLoadingData$.next(false);
+      this.hasData$.next(true);
     }),
     takeUntilDestroyed(),
   );
@@ -40,6 +40,6 @@ export class AppComponent implements OnInit {
   title = 'task-list';
 
   ngOnInit(): void {
-    this.loadData$.subscribe();
+    this.loadDataListener$.subscribe();
   }
 }

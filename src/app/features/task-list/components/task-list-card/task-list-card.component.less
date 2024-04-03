@@ -10,26 +10,28 @@
     row-gap: 12px;
   }
   &__footer {
-    display: none;
     justify-content: end;
     column-gap: 8px;
     margin-top: 24px;
   }
   &__pin-icon {
-    display: none;
     margin-left: 12px;
   }
   &__color-block {
     border-radius: 6px;
   }
+  &--default:hover,
   &--fixed {
-    .on-hover();
+    cursor: pointer;
+    .show-footer-and-pin();
   }
-}
-
-.task-list-card:hover {
-  cursor: pointer;
-  .on-hover();
+  &--loading {
+    opacity: 0.6;
+  }
+  &--loading:hover {
+    cursor: auto;
+  }
+  .hide-footer-and-pin();
 }
 
 .task {
@@ -39,15 +41,24 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    margin: 0px;
+    margin: 0;
   }
   &__tag {
     margin-left: 12px;
-    margin-right: 0px;
+    margin-right: 0;
   }
 }
 
-.on-hover() {
+.hide-footer-and-pin() {
+  &__footer {
+    display: none;
+  }
+  &__pin-icon {
+    display: none;
+  }
+}
+
+.show-footer-and-pin() {
   .task-list-card {
     &__footer {
       display: flex;
@@ -57,4 +68,3 @@
     }
   }
 }
-

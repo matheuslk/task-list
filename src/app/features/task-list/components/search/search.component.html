@@ -1,0 +1,9 @@
+<input
+  class="search"
+  nz-input
+  placeholder="Busque suas tarefas!"
+  nzSize="large"
+  [disabled]="disabled"
+  [ngModel]="search$ | async"
+  (ngModelChange)="search$.next($event)"
+/>

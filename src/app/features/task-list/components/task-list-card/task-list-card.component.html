@@ -1,10 +1,16 @@
 <nz-card
-  *ngIf="{ isFixed: (isFixed$ | async) } as data"
   class="task-list-card"
-  [ngClass]="{ 'task-list-card--fixed': data.isFixed }"
+  *ngIf="{
+    isLoading: (isLoading$ | async),
+    isFixed: (isFixed$ | async)
+  } as data"
+  [ngClass]="{
+    'task-list-card--default': !data.isFixed && !data.isLoading,
+    'task-list-card--fixed': data.isFixed && !data.isLoading,
+    'task-list-card--loading': data.isLoading
+  }"
   [nzTitle]="taskList.title"
   [nzExtra]="header"
-  (click)="handleOpenModal()"
 >
   <div class="task-list-card__content">
     <div *ngFor="let task of taskList.tasks?.slice(0, 5)" class="task">
@@ -22,15 +28,16 @@
   <div class="task-list-card__header">
     <nz-badge
       class="task-list-card__badge"
-      [nzCount]="taskList.tasks?.length"
+      [nzCount]="taskList.tasks.length"
       [nzOverflowCount]="5"
       nzStandalone
     ></nz-badge>
     <span
+      (click)="pinTaskList()"
       class="task-list-card__pin-icon icon icon_md"
       nz-icon
       nzType="pushpin"
-      nzTheme="outline"
+      [nzTheme]="taskList.isFixed ? 'fill' : 'outline'"
     ></span>
   </div>
 </ng-template>
