@@ -4,6 +4,7 @@
     taskLists: (taskLists$ | async),
     showTaskLists: (showTaskLists$ | async),
     showLoader: (showLoader$ | async),
+    hasTasks: (hasTasks$ | async),
     hasFixedTasks: (hasFixedTasks$ | async),
     isEmptyResults: (isEmptyResults$ | async)
   } as data"
@@ -22,7 +23,7 @@
       iconTheme="fill"
       [taskLists]="data.taskLists?.data?.fixed ?? []"
     ></app-task-lists-section>
-    <nz-divider *ngIf="data.hasFixedTasks"></nz-divider>
+    <nz-divider *ngIf="data.hasTasks && data.hasFixedTasks"></nz-divider>
     <app-task-lists-section
       [title]="data.hasFixedTasks ? 'Outras' : undefined"
       [taskLists]="data.taskLists?.data?.taskLists ?? []"
