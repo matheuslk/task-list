@@ -1,29 +1,29 @@
+@import '~ng-zorro-antd/style/themes/variable.less';
+
 .task-list-card {
   &__header {
     display: flex;
     align-items: center;
-    margin-left: 12px;
+    margin-left: @margin-sm;
+    column-gap: @margin-sm;
   }
   &__content {
     display: flex;
     flex-direction: column;
-    row-gap: 12px;
+    row-gap: @margin-sm;
   }
   &__footer {
+    display: flex;
     justify-content: end;
-    column-gap: 8px;
-    margin-top: 24px;
-  }
-  &__pin-icon {
-    margin-left: 12px;
+    margin-top: @margin-lg;
   }
   &__color-block {
-    border-radius: 6px;
+    border-radius: @border-radius-sm;
   }
   &--default:hover,
   &--fixed {
     cursor: pointer;
-    .show-footer-and-pin();
+    .show-footer-and-icons();
   }
   &--loading {
     opacity: 0.6;
@@ -31,7 +31,7 @@
   &--loading:hover {
     cursor: auto;
   }
-  .hide-footer-and-pin();
+  .hide-footer-and-icons();
 }
 
 .task {
@@ -44,27 +44,33 @@
     margin: 0;
   }
   &__tag {
-    margin-left: 12px;
+    margin-left: @margin-sm;
     margin-right: 0;
   }
 }
 
-.hide-footer-and-pin() {
-  &__footer {
+.hide-footer-and-icons() {
+  &__color-popover {
     display: none;
   }
   &__pin-icon {
     display: none;
   }
+  &__footer {
+    visibility: hidden;
+  }
 }
 
-.show-footer-and-pin() {
+.show-footer-and-icons() {
   .task-list-card {
-    &__footer {
-      display: flex;
+    &__color-popover {
+      display: block;
     }
     &__pin-icon {
       display: inline-block;
+    }
+    &__footer {
+      visibility: visible;
     }
   }
 }
