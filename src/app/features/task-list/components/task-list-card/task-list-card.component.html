@@ -19,25 +19,32 @@
     </div>
   </div>
   <div class="task-list-card__footer">
-    <app-color-popover
-      (visibilityChange)="isFixed$.next($event)"
-    ></app-color-popover>
+    <span
+      class="task-list-card__delete-icon icon"
+      nz-icon
+      nzType="delete"
+      nzTheme="outline"
+    ></span>
   </div>
 </nz-card>
 <ng-template #header>
   <div class="task-list-card__header">
+    <app-color-popover
+      class="task-list-card__color-popover"
+      (visibilityChange)="isFixed$.next($event)"
+    ></app-color-popover>
+    <span
+      (click)="pinTaskList()"
+      class="task-list-card__pin-icon icon"
+      nz-icon
+      nzType="pushpin"
+      [nzTheme]="taskList.isFixed ? 'fill' : 'outline'"
+    ></span>
     <nz-badge
       class="task-list-card__badge"
       [nzCount]="taskList.tasks.length"
       [nzOverflowCount]="5"
       nzStandalone
     ></nz-badge>
-    <span
-      (click)="pinTaskList()"
-      class="task-list-card__pin-icon icon icon_md"
-      nz-icon
-      nzType="pushpin"
-      [nzTheme]="taskList.isFixed ? 'fill' : 'outline'"
-    ></span>
   </div>
 </ng-template>
