@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { Observable, combineLatest, map, shareReplay, zip } from 'rxjs';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { Observable, combineLatest, map, shareReplay } from 'rxjs';
 import { DEFAULT_MESSAGES } from '../../../../shared/data/consts/messages.const';
 import { HomeStoreService } from '../../state/home/home.store.service';
 import { TaskListsSectionComponent } from '../task-lists-section/task-lists-section.component';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @Component({
   selector: 'app-task-lists',
@@ -30,6 +30,13 @@ export class TaskListsComponent {
 
   private isInitialLoading$ = this.homeStoreService.selectIsInitialLoading$();
 
+  hasTasks$: Observable<boolean> = this.taskLists$.pipe(
+    map(
+      (taskLists) =>
+        !!taskLists.data?.taskLists && taskLists.data.taskLists.length > 0,
+    ),
+    shareReplay(),
+  );
   hasFixedTasks$: Observable<boolean> = this.taskLists$.pipe(
     map(
       (taskLists) => !!taskLists.data?.fixed && taskLists.data.fixed.length > 0,
@@ -51,14 +58,15 @@ export class TaskListsComponent {
   isEmptyResults$: Observable<boolean> = combineLatest([
     this.taskLists$,
     this.showLoader$,
+    this.hasTasks$,
     this.hasFixedTasks$,
   ]).pipe(
     map(
-      ([taskLists, showLoader, hasFixedTasks]) =>
+      ([taskLists, showLoader, hasTasks, hasFixedTasks]) =>
         !!taskLists?.data &&
         !showLoader &&
         !taskLists.error &&
-        !taskLists.data.taskLists.length &&
+        !hasTasks &&
         !hasFixedTasks,
     ),
     shareReplay(),
