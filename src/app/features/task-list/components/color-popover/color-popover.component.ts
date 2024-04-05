@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { BehaviorSubject, skip, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ColorEnum } from '../../data/enums/color.enum';
+import { Color } from '../../data/types/color.type';
 
 @Component({
   selector: 'app-color-popover',
@@ -15,12 +17,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class ColorPopoverComponent implements OnInit {
   @Output() visibilityChange = new EventEmitter<boolean>();
-  colors = ['#40a9ff', '#ffec3d', '#ff4d4f'];
+  @Output() colorSelect = new EventEmitter<Color | undefined>();
+  colors = [ColorEnum.RED, ColorEnum.YELLOW, ColorEnum.BLUE];
   isVisible$ = new BehaviorSubject(false);
   isVisibleListener$ = this.isVisible$.pipe(
     skip(1),
     tap((isVisible) => {
-      console.log('IS VISIBLE', isVisible);
       this.visibilityChange.emit(isVisible);
     }),
     takeUntilDestroyed(),
@@ -30,12 +32,8 @@ export class ColorPopoverComponent implements OnInit {
     this.isVisibleListener$.subscribe();
   }
 
-  handleColorSelect(): void {
-    console.log('handleColorOnSelect');
-  }
-
-  handleColorClear(): void {
-    console.log('clear');
+  handleColorSelect(color?: Color): void {
+    this.colorSelect.emit(color);
   }
 
   handleClick(event: MouseEvent): void {

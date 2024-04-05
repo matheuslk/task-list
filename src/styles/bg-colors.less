@@ -1,0 +1,11 @@
+@colors: {
+  red: #ffccc7;
+  yellow: #ffffb8;
+  blue: #bae0ff;
+};
+
+each(@colors, {
+  .bg-@{key} {
+    background-color: @value;
+  }
+});

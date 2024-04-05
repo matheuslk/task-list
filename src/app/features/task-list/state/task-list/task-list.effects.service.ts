@@ -38,7 +38,6 @@ export class TaskListEffectsService {
       this.taskListStoreService.selectUpdateTaskList$().pipe(
         take(1),
         tap(() => {
-          console.log('updateTaskListListener');
           if (updatedTaskListData.updateList) {
             this.homeStoreService.setIsUpdatingList(true);
           }

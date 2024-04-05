@@ -18,14 +18,14 @@
       *ngFor="let color of colors"
       class="popover__color-block"
       [nzColor]="color"
-      (nzOnClick)="handleColorSelect()"
+      (nzOnClick)="handleColorSelect(color)"
     ></nz-color-block>
     <span
       class="icon"
       nz-icon
       nzType="stop"
       nzTheme="outline"
-      (click)="handleColorClear()"
+      (click)="handleColorSelect()"
     ></span>
   </div>
 </ng-template>

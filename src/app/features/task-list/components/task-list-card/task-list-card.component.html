@@ -1,12 +1,13 @@
 <nz-card
-  class="task-list-card"
   *ngIf="{
     isLoading: (isLoading$ | async),
-    isFixed: (isFixed$ | async)
+    isCardInDefaultMode: (isCardInDefaultMode$ | async),
+    isCardInFixedMode: (isCardInFixedMode$ | async)
   } as data"
+  [class]="'task-list-card ' + (taskList.bgColor | getBgColorClass)"
   [ngClass]="{
-    'task-list-card--default': !data.isFixed && !data.isLoading,
-    'task-list-card--fixed': data.isFixed && !data.isLoading,
+    'task-list-card--default': data.isCardInDefaultMode,
+    'task-list-card--fixed': data.isCardInFixedMode,
     'task-list-card--loading': data.isLoading
   }"
   [nzTitle]="taskList.title"
@@ -31,6 +32,7 @@
   <div class="task-list-card__header">
     <app-color-popover
       class="task-list-card__color-popover"
+      (colorSelect)="handleColorSelect($event)"
       (visibilityChange)="isFixed$.next($event)"
     ></app-color-popover>
     <span

@@ -1,4 +1,4 @@
-import { TaskListColor } from '../types/task-list-color.type';
+import { Color } from '../types/color.type';
 
 export interface ITaskListResponse {
   taskLists: ITaskList[];
@@ -10,7 +10,7 @@ export interface ITaskList {
   title: string;
   tasks: ITask[];
   isFixed: boolean;
-  bgColor?: TaskListColor;
+  bgColor?: Color;
 }
 
 export interface ITask {
