@@ -7,10 +7,6 @@ import { ITaskListResponse } from '../../data/interfaces/task-list.interface';
   providedIn: 'root',
 })
 export class HomeStoreService {
-  constructor() {
-    console.log('HomeStoreService');
-  }
-
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   private taskLists$: BehaviorSubject<IStateData<ITaskListResponse>> =

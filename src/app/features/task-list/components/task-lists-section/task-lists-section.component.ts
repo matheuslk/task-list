@@ -21,4 +21,8 @@ export class TaskListsSectionComponent {
   @Input() icon?: string;
   @Input() iconTheme: 'fill' | 'outline' = 'outline';
   @Input() showIcon = true;
+
+  trackList(index: number, taskList: ITaskList): string {
+    return taskList.id ?? '';
+  }
 }
