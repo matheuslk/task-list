@@ -3,8 +3,6 @@ import {
   EMPTY,
   Subject,
   catchError,
-  debounceTime,
-  distinctUntilChanged,
   filter,
   skip,
   switchMap,
@@ -20,7 +18,6 @@ import { HomeStoreService } from './home.store.service';
 })
 export class HomeEffectsService {
   constructor() {
-    this.initialLoadingListener$.subscribe();
     this.taskListsListener$.subscribe();
   }
 
@@ -65,18 +62,6 @@ export class HomeEffectsService {
     }),
     takeUntil(this.homeStoreService.selectViewDestroyed$()),
   );
-
-  private initialLoadingListener$ = this.homeStoreService
-    .selectTaskLists$()
-    .pipe(
-      skip(1),
-      filter((response) => !response.isLoading),
-      take(1),
-      tap(() => {
-        this.homeStoreService.setIsInitialLoading(false);
-      }),
-      takeUntil(this.homeStoreService.selectViewDestroyed$()),
-    );
 
   getTaskLists(search = ''): void {
     this.searchTaskLists$.next(search);
