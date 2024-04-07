@@ -32,6 +32,7 @@
   <div class="task-list-card__header">
     <app-color-popover
       class="task-list-card__color-popover"
+      [selectedColor]="taskList.bgColor"
       (colorSelect)="handleColorSelect($event)"
       (visibilityChange)="isFixed$.next($event)"
     ></app-color-popover>

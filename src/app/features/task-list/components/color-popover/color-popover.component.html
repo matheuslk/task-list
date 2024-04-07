@@ -1,5 +1,5 @@
 <span
-  class="popover icon"
+  class="popover popover--border-red icon"
   nz-icon
   nzType="bg-colors"
   nzTheme="outline"
@@ -17,11 +17,16 @@
     <nz-color-block
       *ngFor="let color of colors"
       class="popover__color-block"
+      [ngClass]="
+        selectedColor === color
+          ? 'popover__color-block--' + (selectedColor | getBorderColorClass)
+          : ''
+      "
       [nzColor]="color"
       (nzOnClick)="handleColorSelect(color)"
     ></nz-color-block>
     <span
-      class="icon"
+      class="popover__clear-icon icon"
       nz-icon
       nzType="stop"
       nzTheme="outline"

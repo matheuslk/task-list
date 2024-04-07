@@ -12,9 +12,9 @@ import {
 } from 'rxjs';
 import { ITaskList } from '../../data/interfaces/task-list.interface';
 import { TaskListService } from '../../services/task-list.service';
+import { HomeEffectsService } from '../home/home.effects.service';
 import { HomeStoreService } from '../home/home.store.service';
 import { TaskListStoreService } from './task-list.store.service';
-import { HomeEffectsService } from '../home/home.effects.service';
 
 @Injectable({
   providedIn: 'root',
