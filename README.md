@@ -1,27 +1,38 @@
-# TaskList
+# 📓 TaskList
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
+### Manage all of your tasks in one place
 
-## Development server
+#### Written with:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+<div style="
+  display: flex;
+  column-gap: 12px;
+">
+  <img src="https://user-images.githubusercontent.com/25181517/183890595-779a7e64-3f43-4634-bad2-eceef4e80268.png" height="36px"/>
+  <img src="https://user-images.githubusercontent.com/25181517/183890598-19a0ac2d-e88a-4005-a8df-1ee36782fde1.png" height="36px"/>
+  
+</div>
 
-## Code scaffolding
+## Features (work in progress...)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- #### ✅ Search for lists
+- #### ✅ Change the list color to give it an additional meaning
+- #### ✅ Pin the most important lists
+- #### ❌ Create, update, and delete lists and their related tasks.
+- #### ❌ Organize the list order by moving items with drag-and-drop
 
-## Build
+## Installation
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm install
+```
 
-## Running unit tests
+## Usage
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm start
+```
 
-## Running end-to-end tests
+## Configuration
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+In this project, I'm using Browser LocalStorage to store the data, as I'm focusing only on the Frontend for now. The project is started with some list and task mocks, but you can configure them in the **task-list.service.ts** and **task.service.ts** files in their **load()** methods.
