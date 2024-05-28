@@ -1,0 +1,15 @@
+<div
+  *ngIf="{
+    showOptions: (showOptions$ | async)
+  } as data"
+  class="footer"
+  [ngClass]="{ 'footer--fixed': data.showOptions }"
+>
+  <span
+    class="footer__delete-icon icon"
+    nz-icon
+    nzType="delete"
+    nzTheme="outline"
+    (click)="removeTaskList$.next()"
+  ></span>
+</div>
