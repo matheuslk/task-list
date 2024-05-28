@@ -1,0 +1,39 @@
+<div
+  class="task-lists"
+  *ngIf="{
+    taskLists: (taskLists$ | async),
+    showTaskLists: (showTaskLists$ | async),
+    showLoader: (showLoader$ | async),
+    hasDefaultTasks: (hasDefaultTasks$ | async),
+    hasFixedTasks: (hasFixedTasks$ | async),
+    isEmptyResults: (isEmptyResults$ | async)
+  } as data"
+>
+  <div *ngIf="data.showTaskLists">
+    <app-task-lists-section
+      *ngIf="data.hasFixedTasks"
+      title="Fixadas"
+      icon="pushpin"
+      iconTheme="fill"
+      [taskLists]="data.taskLists?.data?.fixed ?? []"
+    ></app-task-lists-section>
+    <nz-divider *ngIf="data.hasDefaultTasks && data.hasFixedTasks"></nz-divider>
+    <app-task-lists-section
+      [title]="data.hasFixedTasks ? 'Outras' : undefined"
+      [taskLists]="data.taskLists?.data?.taskLists ?? []"
+    ></app-task-lists-section>
+  </div>
+
+  <div
+    *ngIf="data.isEmptyResults || data.taskLists?.error"
+    class="task-lists__message"
+  >
+    <span *ngIf="data.isEmptyResults" nz-typography>
+      <kbd>{{ DEFAULT_MESSAGES.NOT_FOUND }}</kbd>
+    </span>
+    <span *ngIf="data.taskLists?.error" nz-typography nzType="danger">
+      <kbd> {{ DEFAULT_MESSAGES.ERROR }}</kbd>
+    </span>
+  </div>
+  <nz-skeleton *ngIf="data.showLoader"></nz-skeleton>
+</div>

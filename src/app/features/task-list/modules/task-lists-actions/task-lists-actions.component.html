@@ -1,0 +1,24 @@
+<div
+  *ngIf="{
+    isInitialLoading: (isInitialLoading$ | async)
+  } as data"
+  class="actions"
+>
+  <div class="actions__search">
+    <app-search
+      class="actions__search-input"
+      [disabled]="!!data.isInitialLoading"
+    ></app-search>
+    <button
+      nz-button
+      nzType="primary"
+      nzShape="circle"
+      [disabled]="!!data.isInitialLoading"
+    >
+      <span nz-icon nzType="plus"></span>
+    </button>
+  </div>
+  <div class="actions__store-card">
+    <app-task-list-store-card></app-task-list-store-card>
+  </div>
+</div>

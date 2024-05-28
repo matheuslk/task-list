@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { LocalStorageKeysEnum } from 'src/app/shared/data/enums/local-storage-keys.enum';
-import { LocalStorageService } from 'src/app/shared/services/local-storage.service';
+import { LocalStorageKeysEnum } from 'src/app/core/data/enums/local-storage-keys.enum';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { v4 as uuidv4 } from 'uuid';
 import { ITask } from '../data/interfaces/task-list.interface';
 import { TASKS } from '../data/mocks/task.mock';

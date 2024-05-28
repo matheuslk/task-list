@@ -1,19 +1,19 @@
 import { Routes } from '@angular/router';
-import { URLS } from './shared/data/consts/urls.const';
+import { ROUTES } from './core/data/consts/routes.const';
 import { HomePage } from './features/task-list/home.page';
 
 export const MAIN_ROUTES: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: URLS['HOME'],
+    redirectTo: ROUTES['HOME'],
   },
   {
-    path: URLS['HOME'],
+    path: ROUTES['HOME'],
     component: HomePage,
   },
   {
     path: '**',
-    redirectTo: URLS['HOME'],
+    redirectTo: ROUTES['HOME'],
   },
 ];

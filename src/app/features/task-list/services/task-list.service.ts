@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, filter, map, of } from 'rxjs';
+import { Observable, delay, filter, map, of } from 'rxjs';
 
-import { LocalStorageKeysEnum } from 'src/app/shared/data/enums/local-storage-keys.enum';
-import { LocalStorageService } from 'src/app/shared/services/local-storage.service';
+import { LocalStorageKeysEnum } from 'src/app/core/data/enums/local-storage-keys.enum';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { v4 as uuidv4 } from 'uuid';
 import {
   ITask,
@@ -46,7 +46,7 @@ export class TaskListService {
     return of({
       taskLists: taskLists.filter((list) => !list.isFixed),
       fixed: taskLists.filter((list) => list.isFixed),
-    });
+    }).pipe(delay(1400));
   }
 
   getTaskList$(id: string): Observable<ITaskList> {
@@ -104,5 +104,21 @@ export class TaskListService {
     );
 
     return of(updatedTaskList);
+  }
+
+  removeTaskList$(id: string): Observable<boolean> {
+    const taskLists =
+      this.localStorageService.getItem<ITaskList[]>(
+        LocalStorageKeysEnum.TASK_LISTS,
+      ) ?? [];
+
+    const newTaskLists = taskLists.filter((list) => list.id !== id);
+
+    this.localStorageService.setItem(
+      LocalStorageKeysEnum.TASK_LISTS,
+      newTaskLists,
+    );
+
+    return of(true);
   }
 }
