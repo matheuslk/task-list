@@ -1,10 +1,12 @@
 <div
   *ngIf="{
-    isInitialLoading: (isInitialLoading$ | async)
+    isInitialLoading: (isInitialLoading$ | async),
+    isStoringTaskList: (isStoringTaskList$ | async),
+    isLoadingTaskLists: (isLoadingTaskLists$ | async)
   } as data"
   class="actions"
 >
-  <div class="actions__search">
+  <div *ngIf="!data.isStoringTaskList" class="actions__search">
     <app-search
       class="actions__search-input"
       [disabled]="!!data.isInitialLoading"
@@ -13,12 +15,13 @@
       nz-button
       nzType="primary"
       nzShape="circle"
-      [disabled]="!!data.isInitialLoading"
+      [disabled]="!!data.isLoadingTaskLists"
+      (click)="setIsStoringTaskList(!data.isStoringTaskList)"
     >
       <span nz-icon nzType="plus"></span>
     </button>
   </div>
-  <div class="actions__store-card">
-    <app-task-list-store-card></app-task-list-store-card>
+  <div *ngIf="data.isStoringTaskList" class="actions__store-card">
+    <app-task-list-store></app-task-list-store>
   </div>
 </div>

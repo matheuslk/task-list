@@ -1,13 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, delay, filter, map, of } from 'rxjs';
+import { Observable, defer, delay, filter, map, of } from 'rxjs';
 
 import { LocalStorageKeysEnum } from 'src/app/core/data/enums/local-storage-keys.enum';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  ITask,
-  ITaskList,
+  ITaskListRequest,
   ITaskListResponse,
+  ITaskListWithTasksResponse,
+  ITaskListsResponse,
+  ITaskResponse,
 } from '../data/interfaces/task-list.interface';
 import { TASK_LISTS } from '../data/mocks/task-list.mock';
 
@@ -23,102 +25,127 @@ export class TaskListService {
     ]);
   }
 
-  getTaskLists$(body?: { title: string }): Observable<ITaskListResponse> {
-    let taskLists =
-      this.localStorageService.getItem<ITaskList[]>(
-        LocalStorageKeysEnum.TASK_LISTS,
-      ) ?? [];
-    const tasks =
-      this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
-      [];
+  getTaskLists$(title?: string): Observable<ITaskListsResponse> {
+    return defer(() => {
+      let taskLists =
+        this.localStorageService.getItem<ITaskListResponse[]>(
+          LocalStorageKeysEnum.TASK_LISTS,
+        ) ?? [];
+      const tasks =
+        this.localStorageService.getItem<ITaskResponse[]>(
+          LocalStorageKeysEnum.TASKS,
+        ) ?? [];
 
-    if (body?.title) {
-      taskLists = taskLists.filter((list) => list.title.includes(body.title));
-    }
+      if (title) {
+        taskLists = taskLists.filter((list) => list.title.includes(title));
+      }
 
-    taskLists = taskLists.map((list) => {
-      return {
-        ...list,
-        tasks: tasks?.filter((task) => task.task_id === list.id),
-      };
-    });
+      const taskListsWithTasks: ITaskListWithTasksResponse[] = taskLists.map(
+        (list) => ({
+          ...list,
+          tasks: tasks.filter((task) => task.taskListId === list.id),
+        }),
+      );
 
-    return of({
-      taskLists: taskLists.filter((list) => !list.isFixed),
-      fixed: taskLists.filter((list) => list.isFixed),
-    }).pipe(delay(1400));
+      return of({
+        taskLists: taskListsWithTasks.filter((list) => !list.isFixed),
+        fixed: taskListsWithTasks.filter((list) => list.isFixed),
+      });
+    }).pipe(delay(2000));
   }
 
-  getTaskList$(id: string): Observable<ITaskList> {
+  getTaskList$(id: string): Observable<ITaskListWithTasksResponse> {
     return this.getTaskLists$().pipe(
       map((response) => [...response.taskLists, ...response.fixed]),
       map((taskLists) => taskLists.find((list) => list.id === id)),
       filter((taskList) => !!taskList),
-      map((taskList) => {
-        return {
-          ...taskList,
-          tasks: taskList?.tasks?.filter(
-            (task) => task.task_id === taskList.id,
-          ),
-        } as ITaskList;
-      }),
+      map(
+        (taskList) =>
+          ({
+            ...taskList,
+            tasks: taskList?.tasks?.filter(
+              (task) => task.taskListId === taskList.id,
+            ),
+          }) as ITaskListWithTasksResponse,
+      ),
     );
   }
 
-  storeTaskList$(storeTaskList: ITaskList): Observable<ITaskList> {
-    const taskLists =
-      this.localStorageService.getItem<ITaskList[]>(
+  storeTaskList$(taskList: ITaskListRequest): Observable<ITaskListResponse> {
+    return defer(() => {
+      const taskLists =
+        this.localStorageService.getItem<ITaskListResponse[]>(
+          LocalStorageKeysEnum.TASK_LISTS,
+        ) ?? [];
+
+      const newTaskList: ITaskListResponse = {
+        id: uuidv4(),
+        title: taskList.title ?? '',
+        isFixed: taskList.isFixed ?? false,
+        bgColor: taskList.bgColor,
+      };
+
+      taskLists.push(newTaskList);
+
+      this.localStorageService.setItem(
         LocalStorageKeysEnum.TASK_LISTS,
-      ) ?? [];
+        taskLists,
+      );
 
-    storeTaskList.id = uuidv4();
-    taskLists.push(storeTaskList);
-
-    this.localStorageService.setItem(
-      LocalStorageKeysEnum.TASK_LISTS,
-      taskLists,
-    );
-
-    return of(storeTaskList);
+      return of(newTaskList).pipe(delay(2000));
+    });
   }
 
-  updateTaskList$(updatedTaskList: ITaskList): Observable<ITaskList> {
-    const taskLists =
-      this.localStorageService.getItem<ITaskList[]>(
+  updateTaskList$(
+    taskList: ITaskListRequest & Required<Pick<ITaskListRequest, 'id'>>,
+  ): Observable<ITaskListWithTasksResponse> {
+    return defer(() => {
+      const taskLists =
+        this.localStorageService.getItem<ITaskListResponse[]>(
+          LocalStorageKeysEnum.TASK_LISTS,
+        ) ?? [];
+
+      const taskListIndex = taskLists.findIndex(
+        (list) => list.id === taskList.id,
+      );
+
+      // if (taskListIndex === -1) {
+      //   return EMPTY;
+      // }
+
+      const updatedTaskList: ITaskListResponse = {
+        id: taskList.id,
+        title: taskList.title ?? 'Sem título',
+        isFixed: taskList.isFixed ?? false,
+        bgColor: taskList.bgColor,
+      };
+
+      taskLists[taskListIndex] = updatedTaskList;
+
+      this.localStorageService.setItem(
         LocalStorageKeysEnum.TASK_LISTS,
-      ) ?? [];
+        taskLists,
+      );
 
-    const updatedTaskListIndex = taskLists.findIndex(
-      (list) => list.id === updatedTaskList.id,
-    );
-
-    // if (updatedTaskListIndex === -1) {
-    //   return EMPTY;
-    // }
-
-    taskLists[updatedTaskListIndex] = updatedTaskList;
-
-    this.localStorageService.setItem(
-      LocalStorageKeysEnum.TASK_LISTS,
-      taskLists,
-    );
-
-    return of(updatedTaskList);
+      return this.getTaskList$(updatedTaskList.id);
+    });
   }
 
   removeTaskList$(id: string): Observable<boolean> {
-    const taskLists =
-      this.localStorageService.getItem<ITaskList[]>(
+    return defer(() => {
+      const taskLists =
+        this.localStorageService.getItem<ITaskListResponse[]>(
+          LocalStorageKeysEnum.TASK_LISTS,
+        ) ?? [];
+
+      const newTaskLists = taskLists.filter((list) => list.id !== id);
+
+      this.localStorageService.setItem(
         LocalStorageKeysEnum.TASK_LISTS,
-      ) ?? [];
+        newTaskLists,
+      );
 
-    const newTaskLists = taskLists.filter((list) => list.id !== id);
-
-    this.localStorageService.setItem(
-      LocalStorageKeysEnum.TASK_LISTS,
-      newTaskLists,
-    );
-
-    return of(true);
+      return of(true);
+    });
   }
 }

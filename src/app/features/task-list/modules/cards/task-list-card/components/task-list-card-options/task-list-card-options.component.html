@@ -1,0 +1,28 @@
+<div
+  *ngIf="{
+    taskList: (taskList$ | async)
+  } as data"
+  class="options"
+>
+  <ng-container *ngIf="showOptions">
+    <app-color-popover
+      class="options__color-popover"
+      [selectedColor]="data.taskList?.bgColor"
+      (colorSelect)="colorSelect.emit($event)"
+      (visibilityChange)="visibilityChange.emit($event)"
+    ></app-color-popover>
+    <span
+      class="options__pin-icon icon"
+      nz-icon
+      nzType="pushpin"
+      [nzTheme]="data.taskList?.isFixed ? 'fill' : 'outline'"
+      (click)="pinTask.emit()"
+    ></span
+  ></ng-container>
+  <nz-badge
+    *ngIf="showBadge"
+    nzStandalone
+    [nzCount]="data.taskList?.tasks?.length"
+    [nzOverflowCount]="5"
+  ></nz-badge>
+</div>

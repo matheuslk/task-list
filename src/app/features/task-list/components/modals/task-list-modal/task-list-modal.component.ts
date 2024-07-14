@@ -23,8 +23,6 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { ITaskListModalData } from '../../../data/interfaces/modal-data.interface';
-import { ITask } from '../../../data/interfaces/task-list.interface';
 
 @Component({
   selector: 'app-task-list-modal',

@@ -1,0 +1,17 @@
+<div class="task-list-store">
+  <input
+    #titleInput
+    nz-input
+    placeholder="Adicione um título"
+    nzSize="large"
+    (blur)="handleBlur($event)"
+  />
+  <div #actions class="task-list-store__actions">
+    <button nz-button nzType="default" (click)="handleClose()">
+      <span nz-icon nzType="close"></span>
+    </button>
+    <button nz-button nzType="primary" (click)="handleAddTaskList()">
+      Adicionar lista
+    </button>
+  </div>
+</div>

@@ -6,7 +6,6 @@ import {
   Subject,
   catchError,
   combineLatest,
-  delay,
   exhaustMap,
   map,
   of,
@@ -16,63 +15,78 @@ import {
 } from 'rxjs';
 import { GlobalStateStoreService } from 'src/app/core/state/global.state.store.service';
 import {
-  ITaskList,
-  ITaskListResponse,
+  ITaskListRequest,
+  ITaskListWithTasksResponse,
+  ITaskListsResponse,
 } from '../../data/interfaces/task-list.interface';
 import { TaskListService } from '../../services/task-list.service';
-import { HomeStateStoreService } from '../home/home.state.store.service';
+import { HomeStateEffectsService } from '../home/home.state.effects.service';
 import { TaskListStateStoreService } from './task-list.state.store.service';
 
 @Injectable()
 export class TaskListStateEffectsService {
   constructor() {
-    this.updateTaskListListener$.pipe(takeUntilDestroyed()).subscribe();
-    this.removeTaskListListener$.pipe(takeUntilDestroyed()).subscribe();
-    this.globalLoadingListener$.pipe(takeUntilDestroyed()).subscribe();
+    this.updateTaskListListener$.subscribe();
+    this.removeTaskListListener$.subscribe();
+    this.globalLoadingListener$.subscribe();
   }
 
   private globalStateStoreService = inject(GlobalStateStoreService);
-  private homeStateStoreService = inject(HomeStateStoreService);
+  private homeStateEffectsService = inject(HomeStateEffectsService);
   private taskListStateStoreService = inject(TaskListStateStoreService);
   private taskListService = inject(TaskListService);
 
+  private taskList$ = this.taskListStateStoreService.selectTaskList$();
+
   private updateTaskList$: Subject<{
-    taskList: ITaskList;
+    taskList: ITaskListRequest;
     fetchTasks?: boolean;
   }> = new Subject();
   private updateTaskListListener$ = this.updateTaskList$.pipe(
-    exhaustMap((updatedTaskListData) => {
+    exhaustMap(({ taskList: taskListRequest, fetchTasks }) => {
       this.taskListStateStoreService.setUpdateTaskList({
         isLoading: true,
       });
-      return this.taskListService
-        .updateTaskList$(updatedTaskListData.taskList)
-        .pipe(
-          delay(2000),
-          switchMap((updatedTaskList) => {
-            const action$: Observable<any> = updatedTaskListData.fetchTasks
-              ? this.fetchTaskLists$()
-              : of(null);
-            return action$.pipe(map(() => updatedTaskList));
-          }),
-          tap((updatedTaskList) => {
-            this.taskListStateStoreService.setTaskList(updatedTaskList);
-            this.taskListStateStoreService.setUpdateTaskList({
-              data: updatedTaskList,
-              isLoading: false,
-            });
-            console.log('L:64');
-          }),
-          catchError((error) => {
-            this.taskListStateStoreService.setUpdateTaskList({
-              error,
-              isLoading: false,
-            });
-            return EMPTY;
-          }),
-        );
+      return this.taskList$.pipe(
+        take(1),
+        switchMap((currentTaskList) => {
+          const request = {
+            ...(currentTaskList as ITaskListWithTasksResponse),
+            ...taskListRequest,
+          };
+          return this.taskListService.updateTaskList$(request).pipe(
+            switchMap((updatedTaskList) => {
+              const refetch$: Observable<ITaskListsResponse | null> = fetchTasks
+                ? this.homeStateEffectsService.fetchTaskLists$()
+                : of(null);
+              return refetch$.pipe(map(() => updatedTaskList));
+            }),
+            tap((updatedTaskList) => {
+              this.updateTaskListOnSuccess(updatedTaskList);
+            }),
+          );
+        }),
+        catchError((error) => this.updateTaskListOnError$(error)),
+      );
     }),
+    takeUntilDestroyed(),
   );
+  private updateTaskListOnSuccess(
+    updatedTaskList: ITaskListWithTasksResponse,
+  ): void {
+    this.taskListStateStoreService.setTaskList(updatedTaskList);
+    this.taskListStateStoreService.setUpdateTaskList({
+      data: updatedTaskList,
+      isLoading: false,
+    });
+  }
+  private updateTaskListOnError$(error: any): Observable<never> {
+    this.taskListStateStoreService.setUpdateTaskList({
+      error,
+      isLoading: false,
+    });
+    return EMPTY;
+  }
 
   private removeTaskList$: Subject<void> = new Subject();
   private removeTaskListListener$ = this.removeTaskList$.pipe(
@@ -81,19 +95,18 @@ export class TaskListStateEffectsService {
         isLoading: true,
       });
       return this.taskListStateStoreService.selectTaskList$().pipe(
-        delay(2000),
         take(1),
         switchMap((taskList) =>
           this.taskListService.removeTaskList$(taskList?.id as string),
         ),
-        switchMap(() => this.fetchTaskLists$()),
+        switchMap(() => this.homeStateEffectsService.fetchTaskLists$()),
         tap(() => {
           this.taskListStateStoreService.setRemoveTaskList({
             isLoading: false,
           });
         }),
         catchError((error) => {
-          this.taskListStateStoreService.setUpdateTaskList({
+          this.taskListStateStoreService.setRemoveTaskList({
             error,
             isLoading: false,
           });
@@ -101,6 +114,7 @@ export class TaskListStateEffectsService {
         }),
       );
     }),
+    takeUntilDestroyed(),
   );
 
   private globalLoadingListener$ = combineLatest([
@@ -114,26 +128,10 @@ export class TaskListStateEffectsService {
       }
       this.globalStateStoreService.setIsLoading(false);
     }),
+    takeUntilDestroyed(),
   );
 
-  // Helper methods
-
-  private fetchTaskLists$(): Observable<ITaskListResponse> {
-    return this.homeStateStoreService.selectSearch$().pipe(
-      take(1),
-      switchMap((search) =>
-        this.taskListService.getTaskLists$({ title: search }),
-      ),
-      tap((taskLists) => {
-        this.homeStateStoreService.setTaskLists({
-          data: taskLists,
-          isLoading: false,
-        });
-      }),
-    );
-  }
-
-  updateTaskList(taskList: ITaskList, fetchTasks?: boolean): void {
+  updateTaskList(taskList: ITaskListRequest, fetchTasks?: boolean): void {
     this.updateTaskList$.next({ taskList, fetchTasks });
   }
 
