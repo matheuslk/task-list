@@ -3,7 +3,7 @@
     showOptions: (showOptions$ | async)
   } as data"
   class="footer"
-  [ngClass]="{ 'footer--fixed': data.showOptions }"
+  [ngClass]="{ 'footer--fixed': data.showOptions || isFixed }"
 >
   <span
     class="footer__delete-icon icon"

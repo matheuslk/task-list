@@ -26,6 +26,7 @@ export class HomePage implements OnInit {
 
   taskLists$ = this.homeStateStoreService.selectTaskLists$();
 
+  // TODO: Verificar possibilidade de remover trecho de código do componente e deixar apenas nos effects
   private initialLoadingListener$ = this.taskLists$.pipe(
     skip(1),
     filter((response) => !response.isLoading),

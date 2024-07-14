@@ -1,10 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
 
 import { LocalStorageKeysEnum } from 'src/app/core/data/enums/local-storage-keys.enum';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { v4 as uuidv4 } from 'uuid';
-import { ITask } from '../data/interfaces/task-list.interface';
 import { TASKS } from '../data/mocks/task.mock';
 
 @Injectable({
@@ -17,55 +14,61 @@ export class TaskService {
     this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, [...TASKS]);
   }
 
-  storeTask$(storeTask: ITask): Observable<ITask> {
-    const tasks =
-      this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
-      [];
+  // storeTask$(task: ITaskRequest): Observable<ITaskResponse> {
+  //   const tasks =
+  //     this.localStorageService.getItem<ITaskResponse[]>(
+  //       LocalStorageKeysEnum.TASKS,
+  //     ) ?? [];
 
-    storeTask.id = uuidv4();
-    tasks.push(storeTask);
+  //   const newTask: ITaskResponse = {
+  //     id: uuidv4(),
+  //     description: taskList.description,
 
-    this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
+  //   };
+  //   storeTask.id = uuidv4();
+  //   tasks.push(storeTask);
 
-    return of(storeTask);
-  }
+  //   this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
 
-  updateTask$(updatedTask: ITask): Observable<ITask> {
-    const tasks =
-      this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
-      [];
+  //   return of(storeTask);
+  // }
 
-    const updatedTaskIndex = tasks.findIndex(
-      (task) => task.id === updatedTask.id,
-    );
+  // updateTask$(updatedTask: ITask): Observable<ITask> {
+  //   const tasks =
+  //     this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
+  //     [];
 
-    // if (updatedTaskIndex === -1) {
-    //   return EMPTY;
-    // }
+  //   const updatedTaskIndex = tasks.findIndex(
+  //     (task) => task.id === updatedTask.id,
+  //   );
 
-    tasks[updatedTaskIndex] = updatedTask;
+  //   // if (updatedTaskIndex === -1) {
+  //   //   return EMPTY;
+  //   // }
 
-    this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
+  //   tasks[updatedTaskIndex] = updatedTask;
 
-    return of(updatedTask);
-  }
+  //   this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
 
-  removeTask$(id: string): Observable<ITask> {
-    const tasks =
-      this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
-      [];
+  //   return of(updatedTask);
+  // }
 
-    const removeTaskIndex = tasks.findIndex((task) => task.id === id);
-    const removedTask = tasks[removeTaskIndex];
+  // removeTask$(id: string): Observable<ITask> {
+  //   const tasks =
+  //     this.localStorageService.getItem<ITask[]>(LocalStorageKeysEnum.TASKS) ??
+  //     [];
 
-    // if (removeTaskIndex === -1) {
-    //   return EMPTY;
-    // }
+  //   const removeTaskIndex = tasks.findIndex((task) => task.id === id);
+  //   const removedTask = tasks[removeTaskIndex];
 
-    tasks.splice(removeTaskIndex, 1);
+  //   // if (removeTaskIndex === -1) {
+  //   //   return EMPTY;
+  //   // }
 
-    this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
+  //   tasks.splice(removeTaskIndex, 1);
 
-    return of(removedTask);
-  }
+  //   this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
+
+  //   return of(removedTask);
+  // }
 }

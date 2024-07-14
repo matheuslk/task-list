@@ -1,9 +1,12 @@
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ITaskList } from '../../../../data/interfaces/task-list.interface';
+import { Component, Input } from '@angular/core';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { TaskListCardComponent } from '../../../card/task-list-card/task-list-card.component';
+import {
+  ITaskListResponse,
+  ITaskListWithTasksResponse,
+} from 'src/app/features/task-list/data/interfaces/task-list.interface';
+import { TaskListCardComponent } from '../../../cards/task-list-card/task-list-card.component';
 
 @Component({
   selector: 'app-task-lists-section',
@@ -16,13 +19,13 @@ export class TaskListsSectionComponent {
   @Input({
     required: true,
   })
-  taskLists: ITaskList[];
+  taskLists: ITaskListWithTasksResponse[];
   @Input() title?: string;
   @Input() icon?: string;
   @Input() iconTheme: 'fill' | 'outline' = 'outline';
   @Input() showIcon = true;
 
-  trackList(index: number, taskList: ITaskList): string {
+  trackList(index: number, taskList: ITaskListResponse): string {
     return taskList.id ?? '';
   }
 }

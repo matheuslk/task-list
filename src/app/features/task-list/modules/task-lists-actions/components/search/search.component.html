@@ -5,5 +5,5 @@
   nzSize="large"
   [disabled]="disabled"
   [ngModel]="search$ | async"
-  (ngModelChange)="search$.next($event)"
+  (ngModelChange)="handleSearch($event)"
 />

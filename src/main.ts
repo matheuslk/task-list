@@ -12,6 +12,7 @@ import {
   StopOutline,
   DeleteOutline,
   PlusOutline,
+  CloseOutline,
 } from '@ant-design/icons-angular/icons';
 import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -25,6 +26,7 @@ const icons: IconDefinition[] = [
   StopOutline,
   DeleteOutline,
   PlusOutline,
+  CloseOutline,
 ];
 
 registerLocaleData(pt);

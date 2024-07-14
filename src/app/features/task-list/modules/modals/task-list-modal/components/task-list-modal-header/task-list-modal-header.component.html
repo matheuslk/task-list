@@ -1,0 +1,22 @@
+<div
+  *ngIf="{
+    taskList: (taskList$ | async)
+  } as data"
+  class="header"
+>
+  <input
+    #titleInput
+    placeholder="Adicione um título"
+    nz-input
+    nzBorderless
+    [ngModel]="title$.getValue()"
+    (ngModelChange)="title$.next($event)"
+    (blur)="saveTitle$.next(title$.getValue())"
+  />
+
+  <app-task-list-card-options
+    [showBadge]="false"
+    (pinTask)="pinTask$.next(false)"
+    (colorSelect)="colorSelect$.next($event)"
+  ></app-task-list-card-options>
+</div>

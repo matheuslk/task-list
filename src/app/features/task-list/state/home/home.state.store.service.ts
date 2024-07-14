@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IStateData } from 'src/app/core/data/interfaces/state-data.interface';
-import { ITaskListResponse } from '../../data/interfaces/task-list.interface';
+import { ITaskListsResponse } from '../../data/interfaces/task-list.interface';
 
 @Injectable()
 export class HomeStateStoreService {
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  private taskLists$: BehaviorSubject<IStateData<ITaskListResponse>> =
-    new BehaviorSubject<IStateData<ITaskListResponse>>({
+  private taskLists$: BehaviorSubject<IStateData<ITaskListsResponse>> =
+    new BehaviorSubject<IStateData<ITaskListsResponse>>({
       isLoading: false,
     });
 
   private isInitialLoading$: BehaviorSubject<boolean> = new BehaviorSubject(
     true,
-  );
-  private isUpdatingList$: BehaviorSubject<boolean> = new BehaviorSubject(
-    false,
   );
 
   // SETTERS
@@ -25,7 +22,7 @@ export class HomeStateStoreService {
     this.search$.next(search);
   }
 
-  setTaskLists(taskLists: IStateData<ITaskListResponse>): void {
+  setTaskLists(taskLists: IStateData<ITaskListsResponse>): void {
     this.taskLists$.next(taskLists);
   }
 
@@ -39,15 +36,11 @@ export class HomeStateStoreService {
     return this.search$.asObservable();
   }
 
-  selectTaskLists$(): Observable<IStateData<ITaskListResponse>> {
+  selectTaskLists$(): Observable<IStateData<ITaskListsResponse>> {
     return this.taskLists$.asObservable();
   }
 
   selectIsInitialLoading$(): Observable<boolean> {
     return this.isInitialLoading$.asObservable();
-  }
-
-  selectIsUpdatingList$(): Observable<boolean> {
-    return this.isUpdatingList$.asObservable();
   }
 }
