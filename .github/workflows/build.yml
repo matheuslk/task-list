@@ -1,0 +1,20 @@
+name: CI
+run-name: running CI workflow 🚀
+
+on: [push]
+
+jobs:
+  checkout:
+    steps:
+      - uses: actions/checkout@v4
+  setup-node:
+    steps:
+      - uses: actions/setup-node@v4
+            with:
+              node-version: 18
+  lint:
+    steps: 
+      - run: npm lint
+  test:
+    steps: 
+      - run: npm test
