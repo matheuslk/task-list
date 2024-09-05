@@ -1,0 +1,35 @@
+name: CD
+run-name: running CD workflow 🚀
+
+on:
+  push
+  # workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: install npm dependencies
+        run: npm install
+
+      - name: build
+        run: npm run build
+
+      - name: list files in the repository - BUILD
+        run: ls ${{ github.workspace }}
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: list files in the repository - UPLOAD
+        run: ls ${{ github.workspace }}

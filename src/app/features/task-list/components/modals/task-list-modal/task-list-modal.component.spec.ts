@@ -8,7 +8,7 @@ describe('TaskListModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TaskListModalComponent]
+      imports: [TaskListModalComponent],
     });
     fixture = TestBed.createComponent(TaskListModalComponent);
     component = fixture.componentInstance;
