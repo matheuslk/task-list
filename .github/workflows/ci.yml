@@ -1,10 +1,10 @@
 name: CI
 run-name: running CI workflow 🚀
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -14,16 +14,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
 
       - name: install npm dependencies
         run: npm install
 
       - name: lint
         run: npm run lint
-
-      # - name: test
-      #   run: npm test -- --watch=false
-
-      - name: list files in the repository
-        run: ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
