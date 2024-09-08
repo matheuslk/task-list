@@ -2,12 +2,7 @@
   "root": true,
   "ignorePatterns": ["projects/**/*"],
   "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ]
+    "prettier/prettier": ["error"]
   },
   "overrides": [
     {
