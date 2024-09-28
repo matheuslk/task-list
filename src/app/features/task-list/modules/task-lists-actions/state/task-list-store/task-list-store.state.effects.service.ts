@@ -7,29 +7,22 @@ import {
   catchError,
   combineLatest,
   exhaustMap,
+  of,
   switchMap,
   tap,
 } from 'rxjs';
 import { GlobalStateStoreService } from 'src/app/core/state/global.state.store.service';
 import {
   ITaskListRequest,
-  ITaskListResponse,
-  ITaskListsResponse,
+  ITaskListWithTasksResponse,
 } from 'src/app/features/task-list/data/interfaces/task-list.interface';
 import { TaskListService } from 'src/app/features/task-list/services/task-list.service';
+import { TaskListModalControllerStateEffectsService } from '../../../modals/task-list-modal/state/task-list-modal-controller/task-list-modal-controller.state.effects.service';
 import { TaskListsActionsStateStoreService } from '../task-lists-actions/task-lists-actions.state.store.service';
 import { TaskListStoreStateStoreService } from './task-list-store.state.store.service';
-import { HomeStateEffectsService } from 'src/app/features/task-list/state/home/home.state.effects.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TaskListStoreStateEffectsService {
-  constructor() {
-    this.storeTaskListListener$.subscribe();
-    this.globalLoadingListener$.subscribe();
-  }
-
   private globalStateStoreService = inject(GlobalStateStoreService);
   private taskListStoreStateStoreService = inject(
     TaskListStoreStateStoreService,
@@ -38,7 +31,13 @@ export class TaskListStoreStateEffectsService {
     TaskListsActionsStateStoreService,
   );
   private taskListService = inject(TaskListService);
-  private homeStateEffectsService = inject(HomeStateEffectsService);
+  private taskListModalControllerStateEffectsService = inject(
+    TaskListModalControllerStateEffectsService,
+  );
+  constructor() {
+    this.storeTaskListListener$.subscribe();
+    this.globalLoadingListener$.subscribe();
+  }
 
   private storeTaskList$: Subject<ITaskListRequest> = new Subject();
   private storeTaskListListener$ = this.storeTaskList$.pipe(
@@ -56,16 +55,16 @@ export class TaskListStoreStateEffectsService {
     takeUntilDestroyed(),
   );
   private storeTaskListOnSuccess$(
-    storedTaskList: ITaskListResponse,
-  ): Observable<ITaskListsResponse> {
-    return this.homeStateEffectsService.fetchTaskLists$().pipe(
+    storedTaskList: ITaskListWithTasksResponse,
+  ): Observable<any> {
+    return of({}).pipe(
       tap(() => {
         this.taskListStoreStateStoreService.setStoreTaskList({
           data: storedTaskList,
           isLoading: false,
         });
-        console.log('storeTaskListOnSuccess - exibir modal');
         this.taskListsActionsStateStoreService.setIsStoringTaskList(false);
+        this.taskListModalControllerStateEffectsService.create(storedTaskList);
       }),
     );
   }

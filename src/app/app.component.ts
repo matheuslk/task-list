@@ -2,24 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
-import {
-  BehaviorSubject,
-  EMPTY,
-  Observable,
-  catchError,
-  concatMap,
-  delay,
-  distinctUntilChanged,
-  from,
-  last,
-  mergeAll,
-  of,
-  switchMap,
-  take,
-  takeWhile,
-  tap,
-  throwError,
-} from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, take, tap } from 'rxjs';
 import { LocalStorageKeysEnum } from './core/data/enums/local-storage-keys.enum';
 import { GlobalLoaderService } from './core/services/global-loader.service';
 import { LocalStorageService } from './core/services/local-storage.service';

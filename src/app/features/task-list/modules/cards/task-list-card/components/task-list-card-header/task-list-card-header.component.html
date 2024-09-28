@@ -1,17 +1,20 @@
 <div
   *ngIf="{
-    taskList: (taskList$ | async),
-    showOptions: (showOptions$ | async)
+    taskList: (taskList$ | async)
   } as data"
-  class="header"
+  class="task-list-card-header task-list-header"
 >
-  <h5 class="header__title" nz-typography>
+  <h5 class="task-list-card-header__title" nz-typography>
     {{ data.taskList?.title }}
   </h5>
-  <app-task-list-card-options
-    [showOptions]="data.showOptions ?? false"
-    (pinTask)="pinTask$.next(true)"
-    (colorSelect)="colorSelect$.next($event)"
-    (visibilityChange)="handleVisibilityChange($event)"
-  ></app-task-list-card-options>
+
+  <div class="task-list-header__options">
+    <app-task-list-options *ngIf="showOptions$ | async"></app-task-list-options>
+    <nz-badge
+      *ngIf="data.taskList?.tasks?.length"
+      nzStandalone
+      [nzCount]="data.taskList?.tasks?.length"
+      [nzOverflowCount]="5"
+    ></nz-badge>
+  </div>
 </div>

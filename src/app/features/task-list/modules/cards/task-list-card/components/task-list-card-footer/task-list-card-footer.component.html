@@ -5,11 +5,8 @@
   class="footer"
   [ngClass]="{ 'footer--fixed': data.showOptions || isFixed }"
 >
-  <span
-    class="footer__delete-icon icon"
-    nz-icon
-    nzType="delete"
-    nzTheme="outline"
-    (click)="removeTaskList$.next()"
-  ></span>
+  <app-remove-task-list
+    appPreventClickBubbling
+    class="footer__delete-icon"
+  ></app-remove-task-list>
 </div>

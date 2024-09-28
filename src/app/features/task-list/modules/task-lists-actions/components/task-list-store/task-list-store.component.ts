@@ -12,6 +12,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { TaskListStoreStateEffectsService } from '../../state/task-list-store/task-list-store.state.effects.service';
 import { TaskListsActionsStateStoreService } from '../../state/task-lists-actions/task-lists-actions.state.store.service';
+import { TaskListStoreStateStoreService } from '../../state/task-list-store/task-list-store.state.store.service';
 
 const modules = [FormsModule, NzInputModule, NzButtonModule, NzIconModule];
 
@@ -19,7 +20,7 @@ const modules = [FormsModule, NzInputModule, NzButtonModule, NzIconModule];
   selector: 'app-task-list-store',
   standalone: true,
   imports: [CommonModule, ...modules],
-  providers: [TaskListStoreStateEffectsService],
+  providers: [TaskListStoreStateStoreService, TaskListStoreStateEffectsService],
   templateUrl: './task-list-store.component.html',
   styleUrls: ['./task-list-store.component.less'],
 })

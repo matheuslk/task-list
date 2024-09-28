@@ -1,59 +1,53 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import {
   BehaviorSubject,
-  Subject,
+  debounceTime,
   distinctUntilChanged,
-  filter,
+  skip,
+  take,
   tap,
 } from 'rxjs';
-import { TaskListCardOptionsComponent } from '../../../../cards/task-list-card/components/task-list-card-options/task-list-card-options.component';
-import { TaskListCardHeader } from '../../../../cards/task-list-card/data/models/task-list-card-header.model';
-
-const modules = [NzTypographyModule, NzInputModule, NzFormModule, FormsModule];
-const components = [TaskListCardOptionsComponent];
+import { TaskListOptionsComponent } from '../../../../task-list-options/task-list-options.component';
+import { TaskListModalStateEffectsService } from '../../state/task-list-modal/task-list-modal.state.effects.service';
+import { TaskListModalStateStoreService } from '../../state/task-list-modal/task-list-modal.state.store.service';
 
 @Component({
   selector: 'app-task-list-modal-header',
   standalone: true,
-  imports: [CommonModule, ...modules, ...components],
+  imports: [CommonModule, FormsModule, NzInputModule, TaskListOptionsComponent],
   templateUrl: './task-list-modal-header.component.html',
   styleUrls: ['./task-list-modal-header.component.less'],
 })
-export class TaskListModalHeaderComponent
-  extends TaskListCardHeader
-  implements OnInit, AfterViewInit
-{
+export class TaskListModalHeaderComponent implements OnInit {
   @ViewChild('titleInput')
-  private titleInput: ElementRef<HTMLInputElement>;
+  private taskListStateStoreService = inject(TaskListModalStateStoreService);
+  private taskListModalStateEffectsService = inject(
+    TaskListModalStateEffectsService,
+  );
 
-  title$ = new BehaviorSubject('');
+  taskListState$ = this.taskListStateStoreService.selectTaskListState$();
+  taskList$ = this.taskListStateStoreService.selectTaskListData$();
 
-  private taskListListener$ = this.taskList$.pipe(
-    filter((taskList) => !!taskList),
+  private setTitleListener$ = this.taskList$.pipe(
+    take(1),
     tap((taskList) => {
-      this.title$.next(taskList?.title ?? '');
+      this.title$.next(taskList.title);
     }),
     takeUntilDestroyed(),
   );
 
-  saveTitle$: Subject<string> = new Subject();
-  private saveTitleListener$ = this.saveTitle$.pipe(
+  title$ = new BehaviorSubject('');
+  private titleChangeListener$ = this.title$.pipe(
+    skip(2),
+    debounceTime(300),
     distinctUntilChanged(),
     tap((title) => {
-      this.taskListStateEffectsService.updateTaskList({
+      this.taskListModalStateEffectsService.updateTaskList({
         title,
       });
     }),
@@ -61,16 +55,7 @@ export class TaskListModalHeaderComponent
   );
 
   ngOnInit(): void {
-    this.setListeners();
-  }
-
-  ngAfterViewInit(): void {
-    this.titleInput.nativeElement.focus();
-  }
-
-  protected override setListeners(): void {
-    super.setListeners();
-    this.taskListListener$.subscribe();
-    this.saveTitleListener$.subscribe();
+    this.titleChangeListener$.subscribe();
+    this.setTitleListener$.subscribe();
   }
 }

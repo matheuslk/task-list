@@ -1,0 +1,7 @@
+@import '../variables/colors.less';
+
+each(@bg-colors, {
+  .bg-@{key} {
+    background-color: @value;
+  }
+});

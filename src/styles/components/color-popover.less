@@ -1,0 +1,14 @@
+@import '../variables/colors.less';
+
+each(@border-colors,
+  {
+    .color-popover {
+    &__color-block {
+      &--border-@{key} {
+        .ant-color-picker-color-block-inner {
+          border-color: @value;
+        }
+      }
+    }
+  }
+});
