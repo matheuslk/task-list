@@ -7,17 +7,18 @@ import { provideRouter } from '@angular/router';
 import { IconDefinition } from '@ant-design/icons-angular';
 import {
   BgColorsOutline,
-  PushpinOutline,
-  PushpinFill,
-  StopOutline,
+  CloseOutline,
   DeleteOutline,
   PlusOutline,
-  CloseOutline,
+  PushpinFill,
+  PushpinOutline,
+  StopOutline,
 } from '@ant-design/icons-angular/icons';
 import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AppComponent } from './app/app.component';
 import { MAIN_ROUTES } from './app/routes';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 const icons: IconDefinition[] = [
   BgColorsOutline,
@@ -35,7 +36,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(MAIN_ROUTES),
     provideAnimations(),
-    importProvidersFrom(NzIconModule.forRoot(icons)),
+    importProvidersFrom(NzIconModule.forRoot(icons), NzModalModule),
     { provide: NZ_I18N, useValue: pt_BR },
   ],
 });

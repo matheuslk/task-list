@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TaskListModalHeaderComponent } from './task-list-modal-header.component';
 
-import { TaskListStoreCardHeaderComponent } from './task-list-modal-header.component';
-
-describe('TaskListStoreCardHeaderComponent', () => {
-  let component: TaskListStoreCardHeaderComponent;
-  let fixture: ComponentFixture<TaskListStoreCardHeaderComponent>;
+describe('TaskListModalHeaderComponent', () => {
+  let component: TaskListModalHeaderComponent;
+  let fixture: ComponentFixture<TaskListModalHeaderComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TaskListStoreCardHeaderComponent],
+      imports: [TaskListModalHeaderComponent],
     });
-    fixture = TestBed.createComponent(TaskListStoreCardHeaderComponent);
+    fixture = TestBed.createComponent(TaskListModalHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

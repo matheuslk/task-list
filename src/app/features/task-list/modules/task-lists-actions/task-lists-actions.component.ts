@@ -7,9 +7,14 @@ import { SearchComponent } from './components/search/search.component';
 import { TaskListStoreComponent } from './components/task-list-store/task-list-store.component';
 import { TaskListsActionsStateStoreService } from './state/task-lists-actions/task-lists-actions.state.store.service';
 import { combineLatest, map } from 'rxjs';
+import { TaskListModalComponent } from '../modals/task-list-modal/task-list-modal.component';
 
 const modules = [NzButtonModule, NzIconModule];
-const components = [SearchComponent, TaskListStoreComponent];
+const components = [
+  SearchComponent,
+  TaskListStoreComponent,
+  TaskListModalComponent,
+];
 
 @Component({
   selector: 'app-task-lists-actions',

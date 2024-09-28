@@ -3,9 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { IStateData } from 'src/app/core/data/interfaces/state-data.interface';
 import { ITaskListResponse } from 'src/app/features/task-list/data/interfaces/task-list.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TaskListStoreStateStoreService {
   private storeTaskList$: BehaviorSubject<IStateData<ITaskListResponse>> =
     new BehaviorSubject<IStateData<ITaskListResponse>>({

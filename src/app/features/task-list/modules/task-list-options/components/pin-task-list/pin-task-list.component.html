@@ -1,0 +1,8 @@
+<span
+  *ngIf="theme$ | async as theme"
+  class="pin-icon icon"
+  nz-icon
+  nzType="pushpin"
+  [nzTheme]="theme"
+  (click)="pinTaskList$.next()"
+></span>
