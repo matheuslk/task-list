@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, defer, delay, filter, map, of } from 'rxjs';
+import { Observable, defer, filter, map, of } from 'rxjs';
 
 import { LocalStorageKeysEnum } from 'src/app/core/data/enums/local-storage-keys.enum';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -51,7 +51,7 @@ export class TaskListService {
         taskLists: taskListsWithTasks.filter((list) => !list.isFixed),
         fixed: taskListsWithTasks.filter((list) => list.isFixed),
       });
-    }).pipe(delay(2000));
+    });
   }
 
   getTaskList$(id: string): Observable<ITaskListWithTasksResponse> {
@@ -71,7 +71,9 @@ export class TaskListService {
     );
   }
 
-  storeTaskList$(taskList: ITaskListRequest): Observable<ITaskListResponse> {
+  storeTaskList$(
+    taskList: ITaskListRequest,
+  ): Observable<ITaskListWithTasksResponse> {
     return defer(() => {
       const taskLists =
         this.localStorageService.getItem<ITaskListResponse[]>(
@@ -92,7 +94,7 @@ export class TaskListService {
         taskLists,
       );
 
-      return of(newTaskList).pipe(delay(2000));
+      return of({ ...newTaskList, tasks: [] });
     });
   }
 

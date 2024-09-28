@@ -4,8 +4,10 @@
   } as data"
 >
   <nz-card
-    [class]="'task-list-card ' + (data.taskList?.bgColor | getBgColorClass)"
+    class="task-list-card"
+    [ngClass]="data.taskList?.bgColor | getBgColorClass"
     [nzTitle]="header"
+    (click)="openModal$.next()"
   >
     <div class="task-list-card__content">
       <div *ngFor="let task of data.taskList?.tasks?.slice(0, 5)" class="task">

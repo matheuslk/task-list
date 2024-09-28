@@ -1,22 +1,17 @@
 <div
-  *ngIf="{
-    taskList: (taskList$ | async)
-  } as data"
-  class="header"
+  *ngIf="{ taskListState: (taskListState$ | async) } as data"
+  class="task-list-header"
 >
   <input
-    #titleInput
     placeholder="Adicione um título"
     nz-input
     nzBorderless
-    [ngModel]="title$.getValue()"
+    [ngModel]="title$ | async"
+    [disabled]="!!data.taskListState?.isLoading"
     (ngModelChange)="title$.next($event)"
-    (blur)="saveTitle$.next(title$.getValue())"
   />
 
-  <app-task-list-card-options
-    [showBadge]="false"
-    (pinTask)="pinTask$.next(false)"
-    (colorSelect)="colorSelect$.next($event)"
-  ></app-task-list-card-options>
+  <div class="task-list-header__options">
+    <app-task-list-options></app-task-list-options>
+  </div>
 </div>

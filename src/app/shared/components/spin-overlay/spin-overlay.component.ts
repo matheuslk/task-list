@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
@@ -9,4 +9,6 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
   templateUrl: './spin-overlay.component.html',
   styleUrls: ['./spin-overlay.component.less'],
 })
-export class SpinOverlayComponent {}
+export class SpinOverlayComponent {
+  @Input() position: 'absolute' | 'fixed' = 'fixed';
+}

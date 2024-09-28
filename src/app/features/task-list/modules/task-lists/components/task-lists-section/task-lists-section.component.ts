@@ -26,6 +26,6 @@ export class TaskListsSectionComponent {
   @Input() showIcon = true;
 
   trackList(index: number, taskList: ITaskListResponse): string {
-    return taskList.id ?? '';
+    return taskList.id;
   }
 }
