@@ -1,0 +1,15 @@
+name: Discord
+run-name: running Discord workflow 🚀
+
+on: push
+
+jobs:
+  discord-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord Commits
+        uses: Sniddl/discord-commits@v1.6
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          template: 'avatar-with-link'
+          include-extras: true
