@@ -13,7 +13,9 @@ import { ITaskListsResponse } from '../../data/interfaces/task-list.interface';
 import { TaskListService } from '../../services/task-list.service';
 import { HomeStateStoreService } from './home.state.store.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class HomeStateEffectsService {
   constructor() {
     this.taskListsListener$.subscribe();

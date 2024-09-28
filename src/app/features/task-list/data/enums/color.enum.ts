@@ -1,5 +1,11 @@
 export enum ColorEnum {
-  BLUE = '#bae0ff',
-  YELLOW = '#ffffb8',
-  RED = '#ffccc7',
+  blue = 'blue',
+  yellow = 'yellow',
+  red = 'red',
+}
+
+export enum ColorValueEnum {
+  blue = '#bae0ff',
+  yellow = '#ffffb8',
+  red = '#ffccc7',
 }

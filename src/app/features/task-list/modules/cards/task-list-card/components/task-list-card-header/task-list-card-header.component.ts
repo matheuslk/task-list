@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { TaskListCardHeader } from '../../data/models/task-list-card-header.model';
+import { TaskListStateStoreService } from 'src/app/features/task-list/state/task-list/task-list.state.store.service';
+import { TaskListOptionsComponent } from '../../../../task-list-options/task-list-options.component';
 import { TaskListCardStateStoreService } from '../../state/task-list-card.state.store.service';
-import { TaskListCardOptionsComponent } from '../task-list-card-options/task-list-card-options.component';
 
-const modules = [NzTypographyModule];
-const components = [TaskListCardOptionsComponent];
+const modules = [NzTypographyModule, NzBadgeModule];
+const components = [TaskListOptionsComponent];
 
 @Component({
   selector: 'app-task-list-card-header',
@@ -15,19 +16,10 @@ const components = [TaskListCardOptionsComponent];
   templateUrl: './task-list-card-header.component.html',
   styleUrls: ['./task-list-card-header.component.less'],
 })
-export class TaskListCardHeaderComponent
-  extends TaskListCardHeader
-  implements OnInit
-{
+export class TaskListCardHeaderComponent {
+  private taskListStateStoreService = inject(TaskListStateStoreService);
   private taskListCardStateStoreService = inject(TaskListCardStateStoreService);
 
+  taskList$ = this.taskListStateStoreService.selectTaskListData$();
   showOptions$ = this.taskListCardStateStoreService.selectShowOptions$();
-
-  ngOnInit(): void {
-    super.setListeners();
-  }
-
-  handleVisibilityChange(isVisible: boolean): void {
-    this.taskListCardStateStoreService.setIsFixed(isVisible);
-  }
 }

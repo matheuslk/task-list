@@ -1,63 +1,61 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { GetBgColorClassPipe } from '../../../pipes/get-bg-color-class.pipe';
-import { TaskListStateEffectsService } from '../../../state/task-list/task-list.state.effects.service';
-import { TaskListStateStoreService } from '../../../state/task-list/task-list.state.store.service';
-import { Subject, skip, tap } from 'rxjs';
+import { Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TaskListModalHeaderComponent } from './components/task-list-modal-header/task-list-modal-header.component';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { distinctUntilChanged, map, skip, tap } from 'rxjs';
+import { TaskListStateEffectsModel } from '../../../data/models/task-list.state.effects.model';
+import { TaskListStateStoreService } from '../../../state/task-list/task-list.state.store.service';
 import { TaskListModalFooterComponent } from './components/task-list-modal-footer/task-list-modal-footer.component';
-import { TaskListModalStateEffectsService } from './state/task-list-modal.state.effects.service';
-import { TaskListModalStateStoreService } from './state/task-list-modal.state.store.service';
-
-const modules = [NzCardModule];
-const components = [TaskListModalHeaderComponent, TaskListModalFooterComponent];
-const pipes = [GetBgColorClassPipe];
+import { TaskListModalHeaderComponent } from './components/task-list-modal-header/task-list-modal-header.component';
+import { getModalClass } from './data/functions/get-modal-class.function';
+import { TaskListModalStateEffectsService } from './state/task-list-modal/task-list-modal.state.effects.service';
+import { TaskListModalStateStoreService } from './state/task-list-modal/task-list-modal.state.store.service';
 
 @Component({
-  selector: 'app-task-list-store-card',
   standalone: true,
-  imports: [CommonModule, ...modules, ...components, ...pipes],
+  imports: [
+    CommonModule,
+    NzModalModule,
+    TaskListModalHeaderComponent,
+    TaskListModalFooterComponent,
+  ],
   providers: [
     TaskListModalStateStoreService,
     TaskListModalStateEffectsService,
-    TaskListStateStoreService,
-    TaskListStateEffectsService,
+    {
+      provide: TaskListStateStoreService,
+      useExisting: TaskListModalStateStoreService,
+    },
+    {
+      provide: TaskListStateEffectsModel,
+      useExisting: TaskListModalStateEffectsService,
+    },
   ],
   templateUrl: './task-list-modal.component.html',
-  styleUrls: ['./task-list-modal.component.less'],
+  styleUrls: [],
 })
-export class TaskListModalComponent {
-  private taskListModalStateEffectsService = inject(
-    TaskListModalStateEffectsService,
+export class TaskListModalComponent implements OnInit {
+  private readonly modalRef = inject(NzModalRef);
+  private taskListModalStateStoreService = inject(
+    TaskListModalStateStoreService,
   );
-  private taskListStateStoreService = inject(TaskListStateStoreService);
-  private elementRef = inject(ElementRef);
 
-  private outsideClick$: Subject<void> = new Subject();
-  private outsideClickListener$ = this.outsideClick$.pipe(
+  private taskList$ = this.taskListModalStateStoreService.selectTaskListData$();
+
+  private bgColorListener$ = this.taskList$.pipe(
     skip(1),
-    tap(() => {
-      this.taskListModalStateEffectsService.close();
+    map((taskList) => taskList.bgColor),
+    distinctUntilChanged(),
+    tap((bgColor) => {
+      console.log('bgColorListener - ', bgColor);
+      this.modalRef.updateConfig({
+        nzClassName: getModalClass(bgColor),
+      });
     }),
     takeUntilDestroyed(),
   );
 
-  @HostListener('document:click', ['$event'])
-  handleClick(event: MouseEvent): void {
-    const insideClick = (
-      this.elementRef.nativeElement as HTMLDivElement
-    ).contains(event.target as HTMLElement);
-    if (insideClick) {
-      return;
-    }
-    this.outsideClick$.next();
-  }
-
-  taskList$ = this.taskListStateStoreService.selectTaskList$();
-
   ngOnInit(): void {
-    this.outsideClickListener$.subscribe();
+    this.bgColorListener$.subscribe();
   }
 }

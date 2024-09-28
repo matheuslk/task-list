@@ -3,7 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { IStateData } from 'src/app/core/data/interfaces/state-data.interface';
 import { ITaskListsResponse } from '../../data/interfaces/task-list.interface';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class HomeStateStoreService {
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
@@ -23,7 +25,7 @@ export class HomeStateStoreService {
   }
 
   setTaskLists(taskLists: IStateData<ITaskListsResponse>): void {
-    this.taskLists$.next(taskLists);
+    this.taskLists$.next({ ...taskLists });
   }
 
   setIsInitialLoading(isInitialLoading: boolean): void {
