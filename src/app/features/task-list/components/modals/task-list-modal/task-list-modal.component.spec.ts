@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TaskListModalComponent } from './task-list-modal.component';
+import { TaskListModalComponent } from '../../../modules/modals/task-list-modal/task-list-modal.component';
 
 describe('TaskListModalComponent', () => {
   let component: TaskListModalComponent;
