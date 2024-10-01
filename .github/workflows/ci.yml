@@ -4,7 +4,7 @@ run-name: running CI workflow 🚀
 on: [push, workflow_dispatch]
 
 jobs:
-  lint:
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -21,3 +21,6 @@ jobs:
 
       - name: lint
         run: npm run lint
+
+      - name: test
+        run: npm test -- --watch=false --browsers=ChromeHeadless
