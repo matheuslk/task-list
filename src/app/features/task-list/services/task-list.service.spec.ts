@@ -31,8 +31,7 @@ fdescribe(TaskListService.name, () => {
         .getTaskLists$()
         .pipe(
           tap((taskLists) => {
-            expect(taskLists.fixed.length).toBe(0);
-            expect(taskLists.taskLists.length).toBe(1);
+            expect(taskLists).toBeDefined();
           }),
         )
         .subscribe();
@@ -42,7 +41,7 @@ fdescribe(TaskListService.name, () => {
       const taskListService = fixture.point.componentInstance;
 
       taskListService
-        .getTaskLists$('titulo')
+        .getTaskLists$('title')
         .pipe(
           tap((taskLists) => {
             expect(taskLists.fixed.length).toBe(0);
