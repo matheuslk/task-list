@@ -10,9 +10,9 @@ import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { TaskListStoreStateEffectsService } from '../../state/task-list-store/task-list-store.state.effects.service';
-import { TaskListsActionsStateStoreService } from '../../state/task-lists-actions/task-lists-actions.state.store.service';
-import { TaskListStoreStateStoreService } from '../../state/task-list-store/task-list-store.state.store.service';
+import { TaskListStoreEffectsService } from '../../state/task-list-store/task-list-store.effects.service';
+import { TaskListsActionsStateService } from '../../state/task-lists-actions/task-lists-actions.state.service';
+import { TaskListStoreStateService } from '../../state/task-list-store/task-list-store.state.service';
 
 const modules = [FormsModule, NzInputModule, NzButtonModule, NzIconModule];
 
@@ -20,17 +20,13 @@ const modules = [FormsModule, NzInputModule, NzButtonModule, NzIconModule];
   selector: 'app-task-list-store',
   standalone: true,
   imports: [CommonModule, ...modules],
-  providers: [TaskListStoreStateStoreService, TaskListStoreStateEffectsService],
+  providers: [TaskListStoreStateService, TaskListStoreEffectsService],
   templateUrl: './task-list-store.component.html',
   styleUrls: ['./task-list-store.component.less'],
 })
 export class TaskListStoreComponent implements AfterViewInit {
-  private taskListStoreStateEffectsService = inject(
-    TaskListStoreStateEffectsService,
-  );
-  private taskListsActionsStateStoreService = inject(
-    TaskListsActionsStateStoreService,
-  );
+  private taskListStoreEffectsService = inject(TaskListStoreEffectsService);
+  private taskListsActionsStateService = inject(TaskListsActionsStateService);
 
   @ViewChild('titleInput') titleInput: ElementRef<HTMLInputElement>;
   @ViewChild('actions') actions: ElementRef<HTMLDivElement>;
@@ -57,10 +53,10 @@ export class TaskListStoreComponent implements AfterViewInit {
       this.handleClose();
       return;
     }
-    this.taskListStoreStateEffectsService.storeTaskList({ title });
+    this.taskListStoreEffectsService.storeTaskList({ title });
   }
 
   handleClose(): void {
-    this.taskListsActionsStateStoreService.setIsStoringTaskList(false);
+    this.taskListsActionsStateService.setIsStoringTaskList(false);
   }
 }

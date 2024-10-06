@@ -5,7 +5,7 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { Observable, combineLatest, map, shareReplay } from 'rxjs';
 import { DEFAULT_MESSAGES } from '../../../../shared/data/consts/messages.const';
-import { HomeStateStoreService } from '../../state/home/home.state.store.service';
+import { HomeStateService } from '../../state/home/home.state.service';
 import { TaskListsSectionComponent } from './components/task-lists-section/task-lists-section.component';
 
 const modules = [NzDividerModule, NzTypographyModule, NzSkeletonModule];
@@ -20,14 +20,11 @@ const components = [TaskListsSectionComponent];
 export class TaskListsComponent {
   DEFAULT_MESSAGES = DEFAULT_MESSAGES;
 
-  private homeStateStoreService = inject(HomeStateStoreService);
+  private homeStateService = inject(HomeStateService);
 
-  taskLists$ = this.homeStateStoreService
-    .selectTaskLists$()
-    .pipe(shareReplay());
+  taskLists$ = this.homeStateService.selectTaskLists$().pipe(shareReplay());
 
-  private isInitialLoading$ =
-    this.homeStateStoreService.selectIsInitialLoading$();
+  private isInitialLoading$ = this.homeStateService.selectIsInitialLoading$();
 
   hasDefaultTasks$: Observable<boolean> = this.taskLists$.pipe(
     map(

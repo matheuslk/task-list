@@ -11,26 +11,26 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { GlobalStateStoreService } from 'src/app/core/state/global.state.store.service';
+import { GlobalStateService } from 'src/app/core/state/global.state.service';
 import {
   ITaskListRequest,
   ITaskListWithTasksResponse,
 } from '../../data/interfaces/task-list.interface';
 import { TaskListService } from '../../services/task-list.service';
-import { TaskListStateStoreService } from '../../state/task-list/task-list.state.store.service';
+import { TaskListStateService } from '../../state/task-list/task-list.state.service';
 
 @Directive()
-export abstract class TaskListStateEffectsModel {
-  protected taskListStateStoreService = inject(TaskListStateStoreService);
+export abstract class TaskListEffectsModel {
+  protected taskListStateService = inject(TaskListStateService);
   protected taskListService = inject(TaskListService);
-  protected globalStateStoreService = inject(GlobalStateStoreService);
+  protected globalStateService = inject(GlobalStateService);
 
-  protected taskList$ = this.taskListStateStoreService.selectTaskListData$();
+  protected taskList$ = this.taskListStateService.selectTaskListData$();
 
   private updateTaskList$: Subject<ITaskListRequest> = new Subject();
   private updateTaskListListener$ = this.updateTaskList$.pipe(
     exhaustMap((taskListRequest) => {
-      this.taskListStateStoreService.setTaskList({
+      this.taskListStateService.setTaskList({
         isLoading: true,
       });
       return this.taskList$.pipe(
@@ -58,7 +58,7 @@ export abstract class TaskListStateEffectsModel {
   ): Observable<any> {
     return of({}).pipe(
       tap(() => {
-        this.taskListStateStoreService.setTaskList({
+        this.taskListStateService.setTaskList({
           data: updatedTaskList,
           isLoading: false,
         });
@@ -66,7 +66,7 @@ export abstract class TaskListStateEffectsModel {
     );
   }
   private updateTaskListOnError$(error: any): Observable<never> {
-    this.taskListStateStoreService.setTaskList({
+    this.taskListStateService.setTaskList({
       error,
       isLoading: false,
     });
@@ -76,7 +76,7 @@ export abstract class TaskListStateEffectsModel {
   private removeTaskList$: Subject<void> = new Subject();
   private removeTaskListListener$ = this.removeTaskList$.pipe(
     exhaustMap(() => {
-      this.taskListStateStoreService.setTaskList({
+      this.taskListStateService.setTaskList({
         isLoading: true,
       });
       return this.taskList$.pipe(
@@ -93,7 +93,7 @@ export abstract class TaskListStateEffectsModel {
   protected removeTaskListOnSuccess$(): Observable<any> {
     return of({}).pipe(
       tap(() => {
-        this.taskListStateStoreService.setTaskList({
+        this.taskListStateService.setTaskList({
           isLoading: false,
         });
       }),
@@ -101,18 +101,18 @@ export abstract class TaskListStateEffectsModel {
   }
 
   private removeTaskListOnError$(error: any): Observable<never> {
-    this.taskListStateStoreService.setTaskList({
+    this.taskListStateService.setTaskList({
       error,
       isLoading: false,
     });
     return EMPTY;
   }
 
-  protected loadingListener$ = this.taskListStateStoreService
+  protected loadingListener$ = this.taskListStateService
     .selectTaskListState$()
     .pipe(
       tap((taskList) => {
-        this.globalStateStoreService.setIsLoading(taskList.isLoading);
+        this.globalStateService.setIsLoading(taskList.isLoading);
       }),
       takeUntilDestroyed(),
     );

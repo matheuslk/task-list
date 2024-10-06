@@ -3,13 +3,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { distinctUntilChanged, map, skip, tap } from 'rxjs';
-import { TaskListStateEffectsModel } from '../../../data/models/task-list.state.effects.model';
-import { TaskListStateStoreService } from '../../../state/task-list/task-list.state.store.service';
+import { TaskListEffectsModel } from '../../../data/models/task-list.state.effects.model';
+import { TaskListStateService } from '../../../state/task-list/task-list.state.service';
 import { TaskListModalFooterComponent } from './components/task-list-modal-footer/task-list-modal-footer.component';
 import { TaskListModalHeaderComponent } from './components/task-list-modal-header/task-list-modal-header.component';
 import { getModalClass } from './data/functions/get-modal-class.function';
-import { TaskListModalStateEffectsService } from './state/task-list-modal/task-list-modal.state.effects.service';
-import { TaskListModalStateStoreService } from './state/task-list-modal/task-list-modal.state.store.service';
+import { TaskListModalEffectsService } from './state/task-list-modal/task-list-modal.effects.service';
+import { TaskListModalStateService } from './state/task-list-modal/task-list-modal.state.service';
 
 @Component({
   standalone: true,
@@ -20,15 +20,15 @@ import { TaskListModalStateStoreService } from './state/task-list-modal/task-lis
     TaskListModalFooterComponent,
   ],
   providers: [
-    TaskListModalStateStoreService,
-    TaskListModalStateEffectsService,
+    TaskListModalStateService,
+    TaskListModalEffectsService,
     {
-      provide: TaskListStateStoreService,
-      useExisting: TaskListModalStateStoreService,
+      provide: TaskListStateService,
+      useExisting: TaskListModalStateService,
     },
     {
-      provide: TaskListStateEffectsModel,
-      useExisting: TaskListModalStateEffectsService,
+      provide: TaskListEffectsModel,
+      useExisting: TaskListModalEffectsService,
     },
   ],
   templateUrl: './task-list-modal.component.html',
@@ -36,11 +36,9 @@ import { TaskListModalStateStoreService } from './state/task-list-modal/task-lis
 })
 export class TaskListModalComponent implements OnInit {
   private readonly modalRef = inject(NzModalRef);
-  private taskListModalStateStoreService = inject(
-    TaskListModalStateStoreService,
-  );
+  private taskListModalStateService = inject(TaskListModalStateService);
 
-  private taskList$ = this.taskListModalStateStoreService.selectTaskListData$();
+  private taskList$ = this.taskListModalStateService.selectTaskListData$();
 
   private bgColorListener$ = this.taskList$.pipe(
     skip(1),

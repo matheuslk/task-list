@@ -11,28 +11,24 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { GlobalStateStoreService } from 'src/app/core/state/global.state.store.service';
+import { GlobalStateService } from 'src/app/core/state/global.state.service';
 import {
   ITaskListRequest,
   ITaskListWithTasksResponse,
 } from 'src/app/features/task-list/data/interfaces/task-list.interface';
 import { TaskListService } from 'src/app/features/task-list/services/task-list.service';
-import { TaskListModalControllerStateEffectsService } from '../../../modals/task-list-modal/state/task-list-modal-controller/task-list-modal-controller.state.effects.service';
-import { TaskListsActionsStateStoreService } from '../task-lists-actions/task-lists-actions.state.store.service';
-import { TaskListStoreStateStoreService } from './task-list-store.state.store.service';
+import { TaskListModalControllerEffectsService } from '../../../modals/task-list-modal/state/task-list-modal-controller/task-list-modal-controller.state.effects.service';
+import { TaskListsActionsStateService } from '../task-lists-actions/task-lists-actions.state.service';
+import { TaskListStoreStateService } from './task-list-store.state.service';
 
 @Injectable()
-export class TaskListStoreStateEffectsService {
-  private globalStateStoreService = inject(GlobalStateStoreService);
-  private taskListStoreStateStoreService = inject(
-    TaskListStoreStateStoreService,
-  );
-  private taskListsActionsStateStoreService = inject(
-    TaskListsActionsStateStoreService,
-  );
+export class TaskListStoreEffectsService {
+  private globalStateService = inject(GlobalStateService);
+  private taskListStoreStateService = inject(TaskListStoreStateService);
+  private taskListsActionsStateService = inject(TaskListsActionsStateService);
   private taskListService = inject(TaskListService);
-  private taskListModalControllerStateEffectsService = inject(
-    TaskListModalControllerStateEffectsService,
+  private taskListModalControllerEffectsService = inject(
+    TaskListModalControllerEffectsService,
   );
   constructor() {
     this.storeTaskListListener$.subscribe();
@@ -42,7 +38,7 @@ export class TaskListStoreStateEffectsService {
   private storeTaskList$: Subject<ITaskListRequest> = new Subject();
   private storeTaskListListener$ = this.storeTaskList$.pipe(
     exhaustMap((taskListRequest) => {
-      this.taskListStoreStateStoreService.setStoreTaskList({
+      this.taskListStoreStateService.setStoreTaskList({
         isLoading: true,
       });
       return this.taskListService.storeTaskList$(taskListRequest).pipe(
@@ -59,17 +55,17 @@ export class TaskListStoreStateEffectsService {
   ): Observable<any> {
     return of({}).pipe(
       tap(() => {
-        this.taskListStoreStateStoreService.setStoreTaskList({
+        this.taskListStoreStateService.setStoreTaskList({
           data: storedTaskList,
           isLoading: false,
         });
-        this.taskListsActionsStateStoreService.setIsStoringTaskList(false);
-        this.taskListModalControllerStateEffectsService.create(storedTaskList);
+        this.taskListsActionsStateService.setIsStoringTaskList(false);
+        this.taskListModalControllerEffectsService.create(storedTaskList);
       }),
     );
   }
   private storeTaskListOnError$(error: any): Observable<never> {
-    this.taskListStoreStateStoreService.setStoreTaskList({
+    this.taskListStoreStateService.setStoreTaskList({
       error,
       isLoading: false,
     });
@@ -77,14 +73,14 @@ export class TaskListStoreStateEffectsService {
   }
 
   private globalLoadingListener$ = combineLatest([
-    this.taskListStoreStateStoreService.selectStoreTaskList$(),
+    this.taskListStoreStateService.selectStoreTaskList$(),
   ]).pipe(
     tap(([storeTaskList]) => {
       if (storeTaskList.isLoading) {
-        this.globalStateStoreService.setIsLoading(true);
+        this.globalStateService.setIsLoading(true);
         return;
       }
-      this.globalStateStoreService.setIsLoading(false);
+      this.globalStateService.setIsLoading(false);
     }),
     takeUntilDestroyed(),
   );

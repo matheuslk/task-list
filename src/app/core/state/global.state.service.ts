@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class GlobalStateStoreService {
+export class GlobalStateService {
   private isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   // SETTERS

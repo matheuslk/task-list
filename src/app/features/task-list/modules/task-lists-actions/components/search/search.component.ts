@@ -4,8 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { debounceTime, distinctUntilChanged, skip, tap } from 'rxjs';
-import { HomeStateStoreService } from 'src/app/features/task-list/state/home/home.state.store.service';
-import { HomeStateEffectsService } from '../../../../state/home/home.state.effects.service';
+import { HomeStateService } from 'src/app/features/task-list/state/home/home.state.service';
+import { HomeEffectsService } from '../../../../state/home/home.effects.service';
 
 @Component({
   selector: 'app-search',
@@ -15,18 +15,18 @@ import { HomeStateEffectsService } from '../../../../state/home/home.state.effec
   styleUrls: ['./search.component.less'],
 })
 export class SearchComponent implements OnInit {
-  private homeStateStoreService = inject(HomeStateStoreService);
-  private homeStateEffectsService = inject(HomeStateEffectsService);
+  private homeStateService = inject(HomeStateService);
+  private homeEffectsService = inject(HomeEffectsService);
 
   @Input() disabled = false;
 
-  search$ = this.homeStateStoreService.selectSearch$();
+  search$ = this.homeStateService.selectSearch$();
   private searchListener$ = this.search$.pipe(
     skip(1),
     debounceTime(300),
     distinctUntilChanged(),
     tap(() => {
-      this.homeStateEffectsService.getTaskLists();
+      this.homeEffectsService.getTaskLists();
     }),
     takeUntilDestroyed(),
   );
@@ -40,6 +40,6 @@ export class SearchComponent implements OnInit {
   }
 
   handleSearch(search: string): void {
-    this.homeStateStoreService.setSearch(search);
+    this.homeStateService.setSearch(search);
   }
 }

@@ -6,7 +6,7 @@ import { BehaviorSubject, distinctUntilChanged, take, tap } from 'rxjs';
 import { LocalStorageKeysEnum } from './core/data/enums/local-storage-keys.enum';
 import { GlobalLoaderService } from './core/services/global-loader.service';
 import { LocalStorageService } from './core/services/local-storage.service';
-import { GlobalStateStoreService } from './core/state/global.state.store.service';
+import { GlobalStateService } from './core/state/global.state.service';
 import { TaskListService } from './features/task-list/services/task-list.service';
 import { TaskService } from './features/task-list/services/task.service';
 
@@ -18,13 +18,13 @@ import { TaskService } from './features/task-list/services/task.service';
   styleUrls: ['./app.component.less'],
 })
 export class AppComponent implements OnInit {
-  private globalStateStoreService = inject(GlobalStateStoreService);
+  private globalStateService = inject(GlobalStateService);
   private globalLoaderService = inject(GlobalLoaderService);
   private taskListService = inject(TaskListService);
   private taskService = inject(TaskService);
   private localStorageService = inject(LocalStorageService);
 
-  private isLoading$ = this.globalStateStoreService.selectIsLoading$();
+  private isLoading$ = this.globalStateService.selectIsLoading$();
   // TODO: Verificar possibilidade de remover trecho de código do componente e deixar apenas nos effects
   private globalLoadingListener$ = this.isLoading$.pipe(
     distinctUntilChanged(),

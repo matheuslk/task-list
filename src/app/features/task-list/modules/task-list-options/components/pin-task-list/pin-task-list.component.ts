@@ -4,8 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ThemeType } from '@ant-design/icons-angular';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { exhaustMap, map, Observable, Subject, take, tap } from 'rxjs';
-import { TaskListStateEffectsModel } from '../../../../data/models/task-list.state.effects.model';
-import { TaskListStateStoreService } from '../../../../state/task-list/task-list.state.store.service';
+import { TaskListEffectsModel } from '../../../../data/models/task-list.state.effects.model';
+import { TaskListStateService } from '../../../../state/task-list/task-list.state.service';
 
 const modules = [NzIconModule];
 
@@ -17,10 +17,10 @@ const modules = [NzIconModule];
   styleUrls: ['./pin-task-list.component.less'],
 })
 export class PinTaskListComponent implements OnInit {
-  private taskListStateStoreService = inject(TaskListStateStoreService);
-  private taskListStateEffectsService = inject(TaskListStateEffectsModel);
+  private taskListStateService = inject(TaskListStateService);
+  private taskListEffectsService = inject(TaskListEffectsModel);
 
-  private taskList$ = this.taskListStateStoreService.selectTaskListData$();
+  private taskList$ = this.taskListStateService.selectTaskListData$();
 
   theme$: Observable<ThemeType> = this.taskList$.pipe(
     map((taskList) => (taskList.isFixed ? 'fill' : 'outline')),
@@ -32,7 +32,7 @@ export class PinTaskListComponent implements OnInit {
       this.taskList$.pipe(
         take(1),
         tap((taskList) => {
-          this.taskListStateEffectsService.updateTaskList({
+          this.taskListEffectsService.updateTaskList({
             isFixed: !taskList.isFixed,
           });
         }),

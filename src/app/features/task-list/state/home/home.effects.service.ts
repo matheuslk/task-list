@@ -11,33 +11,33 @@ import {
 } from 'rxjs';
 import { ITaskListsResponse } from '../../data/interfaces/task-list.interface';
 import { TaskListService } from '../../services/task-list.service';
-import { HomeStateStoreService } from './home.state.store.service';
+import { HomeStateService } from './home.state.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class HomeStateEffectsService {
+export class HomeEffectsService {
   constructor() {
     this.taskListsListener$.subscribe();
   }
 
-  private homeStateStoreService = inject(HomeStateStoreService);
+  private homeStateService = inject(HomeStateService);
   private taskListService = inject(TaskListService);
 
   private getTaskLists$: Subject<void> = new Subject();
   private taskListsListener$ = this.getTaskLists$.pipe(
     switchMap(() =>
-      this.homeStateStoreService.selectTaskLists$().pipe(
+      this.homeStateService.selectTaskLists$().pipe(
         take(1),
         tap((taskListsState) => {
-          this.homeStateStoreService.setTaskLists({
+          this.homeStateService.setTaskLists({
             data: taskListsState.data,
             isLoading: true,
           });
         }),
         switchMap(() => this.fetchTaskLists$()),
         catchError((error) => {
-          this.homeStateStoreService.setTaskLists({
+          this.homeStateService.setTaskLists({
             isLoading: false,
             error,
           });
@@ -52,11 +52,11 @@ export class HomeStateEffectsService {
 
   // Used to refetch task lists
   fetchTaskLists$(): Observable<ITaskListsResponse> {
-    return this.homeStateStoreService.selectSearch$().pipe(
+    return this.homeStateService.selectSearch$().pipe(
       take(1),
       switchMap((search) => this.taskListService.getTaskLists$(search)),
       tap((taskLists) => {
-        this.homeStateStoreService.setTaskLists({
+        this.homeStateService.setTaskLists({
           data: taskLists,
           isLoading: false,
         });

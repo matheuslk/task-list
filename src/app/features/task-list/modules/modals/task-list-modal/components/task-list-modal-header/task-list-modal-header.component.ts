@@ -13,8 +13,8 @@ import {
   tap,
 } from 'rxjs';
 import { TaskListOptionsComponent } from '../../../../task-list-options/task-list-options.component';
-import { TaskListModalStateEffectsService } from '../../state/task-list-modal/task-list-modal.state.effects.service';
-import { TaskListModalStateStoreService } from '../../state/task-list-modal/task-list-modal.state.store.service';
+import { TaskListModalEffectsService } from '../../state/task-list-modal/task-list-modal.effects.service';
+import { TaskListModalStateService } from '../../state/task-list-modal/task-list-modal.state.service';
 
 @Component({
   selector: 'app-task-list-modal-header',
@@ -25,13 +25,11 @@ import { TaskListModalStateStoreService } from '../../state/task-list-modal/task
 })
 export class TaskListModalHeaderComponent implements OnInit {
   @ViewChild('titleInput')
-  private taskListStateStoreService = inject(TaskListModalStateStoreService);
-  private taskListModalStateEffectsService = inject(
-    TaskListModalStateEffectsService,
-  );
+  private taskListStateService = inject(TaskListModalStateService);
+  private taskListModalEffectsService = inject(TaskListModalEffectsService);
 
-  taskListState$ = this.taskListStateStoreService.selectTaskListState$();
-  taskList$ = this.taskListStateStoreService.selectTaskListData$();
+  taskListState$ = this.taskListStateService.selectTaskListState$();
+  taskList$ = this.taskListStateService.selectTaskListData$();
 
   private setTitleListener$ = this.taskList$.pipe(
     take(1),
@@ -47,7 +45,7 @@ export class TaskListModalHeaderComponent implements OnInit {
     debounceTime(300),
     distinctUntilChanged(),
     tap((title) => {
-      this.taskListModalStateEffectsService.updateTaskList({
+      this.taskListModalEffectsService.updateTaskList({
         title,
       });
     }),

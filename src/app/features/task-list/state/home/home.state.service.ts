@@ -6,7 +6,7 @@ import { ITaskListsResponse } from '../../data/interfaces/task-list.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class HomeStateStoreService {
+export class HomeStateService {
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   private taskLists$: BehaviorSubject<IStateData<ITaskListsResponse>> =

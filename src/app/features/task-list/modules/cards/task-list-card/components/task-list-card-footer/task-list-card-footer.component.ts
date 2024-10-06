@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { RemoveTaskListComponent } from 'src/app/features/task-list/components/remove-task-list/remove-task-list.component';
-import { TaskListCardStateStoreService } from '../../state/task-list-card.state.store.service';
+import { TaskListCardStateService } from '../../state/task-list-card.state.service';
 import { PreventClickBubblingDirective } from 'src/app/features/task-list/directives/prevent-click-bubbling.directive';
 
 const components = [RemoveTaskListComponent];
@@ -16,9 +16,9 @@ const directives = [PreventClickBubblingDirective];
   styleUrls: ['./task-list-card-footer.component.less'],
 })
 export class TaskListCardFooterComponent {
-  private taskListCardStateStoreService = inject(TaskListCardStateStoreService);
+  private taskListCardStateService = inject(TaskListCardStateService);
 
   @Input() isFixed = false;
 
-  showOptions$ = this.taskListCardStateStoreService.selectShowOptions$();
+  showOptions$ = this.taskListCardStateService.selectShowOptions$();
 }

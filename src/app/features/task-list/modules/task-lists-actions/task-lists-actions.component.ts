@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { HomeStateStoreService } from '../../state/home/home.state.store.service';
+import { HomeStateService } from '../../state/home/home.state.service';
 import { SearchComponent } from './components/search/search.component';
 import { TaskListStoreComponent } from './components/task-list-store/task-list-store.component';
-import { TaskListsActionsStateStoreService } from './state/task-lists-actions/task-lists-actions.state.store.service';
+import { TaskListsActionsStateService } from './state/task-lists-actions/task-lists-actions.state.service';
 import { combineLatest, map } from 'rxjs';
 import { TaskListModalComponent } from '../modals/task-list-modal/task-list-modal.component';
 
@@ -20,23 +20,21 @@ const components = [
   selector: 'app-task-lists-actions',
   standalone: true,
   imports: [CommonModule, ...modules, ...components],
-  providers: [TaskListsActionsStateStoreService],
+  providers: [TaskListsActionsStateService],
   templateUrl: './task-lists-actions.component.html',
   styleUrls: ['./task-lists-actions.component.less'],
 })
 export class TaskListsActionsComponent {
-  private taskListsActionsStateStoreService = inject(
-    TaskListsActionsStateStoreService,
-  );
-  private homeStateStoreService = inject(HomeStateStoreService);
+  private taskListsActionsStateService = inject(TaskListsActionsStateService);
+  private homeStateService = inject(HomeStateService);
 
-  isInitialLoading$ = this.homeStateStoreService.selectIsInitialLoading$();
+  isInitialLoading$ = this.homeStateService.selectIsInitialLoading$();
   isStoringTaskList$ =
-    this.taskListsActionsStateStoreService.selectIsStoringTaskList$();
+    this.taskListsActionsStateService.selectIsStoringTaskList$();
 
   isLoadingTaskLists$ = combineLatest([
     this.isInitialLoading$,
-    this.homeStateStoreService.selectTaskLists$(),
+    this.homeStateService.selectTaskLists$(),
   ]).pipe(
     map(
       ([isInitialLoading, taskLists]) =>
@@ -45,8 +43,6 @@ export class TaskListsActionsComponent {
   );
 
   setIsStoringTaskList(isStoringTaskList: boolean): void {
-    this.taskListsActionsStateStoreService.setIsStoringTaskList(
-      isStoringTaskList,
-    );
+    this.taskListsActionsStateService.setIsStoringTaskList(isStoringTaskList);
   }
 }

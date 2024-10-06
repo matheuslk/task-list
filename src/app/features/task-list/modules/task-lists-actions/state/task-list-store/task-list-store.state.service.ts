@@ -4,7 +4,7 @@ import { IStateData } from 'src/app/core/data/interfaces/state-data.interface';
 import { ITaskListResponse } from 'src/app/features/task-list/data/interfaces/task-list.interface';
 
 @Injectable()
-export class TaskListStoreStateStoreService {
+export class TaskListStoreStateService {
   private storeTaskList$: BehaviorSubject<IStateData<ITaskListResponse>> =
     new BehaviorSubject<IStateData<ITaskListResponse>>({
       isLoading: false,

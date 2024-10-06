@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { TaskListStateEffectsModel } from '../../data/models/task-list.state.effects.model';
+import { TaskListEffectsModel } from '../../data/models/task-list.state.effects.model';
 
 const modules = [NzIconModule];
 
@@ -13,9 +13,9 @@ const modules = [NzIconModule];
   styleUrls: ['./remove-task-list.component.less'],
 })
 export class RemoveTaskListComponent {
-  private taskListStateEffectsService = inject(TaskListStateEffectsModel);
+  private taskListEffectsService = inject(TaskListEffectsModel);
 
   removeTaskList(): void {
-    this.taskListStateEffectsService.removeTaskList();
+    this.taskListEffectsService.removeTaskList();
   }
 }

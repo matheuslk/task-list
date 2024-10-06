@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { TaskListStateStoreService } from 'src/app/features/task-list/state/task-list/task-list.state.store.service';
+import { TaskListStateService } from 'src/app/features/task-list/state/task-list/task-list.state.service';
 import { TaskListOptionsComponent } from '../../../../task-list-options/task-list-options.component';
-import { TaskListCardStateStoreService } from '../../state/task-list-card.state.store.service';
+import { TaskListCardStateService } from '../../state/task-list-card.state.service';
 
 const modules = [NzTypographyModule, NzBadgeModule];
 const components = [TaskListOptionsComponent];
@@ -17,9 +17,9 @@ const components = [TaskListOptionsComponent];
   styleUrls: ['./task-list-card-header.component.less'],
 })
 export class TaskListCardHeaderComponent {
-  private taskListStateStoreService = inject(TaskListStateStoreService);
-  private taskListCardStateStoreService = inject(TaskListCardStateStoreService);
+  private taskListStateService = inject(TaskListStateService);
+  private taskListCardStateService = inject(TaskListCardStateService);
 
-  taskList$ = this.taskListStateStoreService.selectTaskListData$();
-  showOptions$ = this.taskListCardStateStoreService.selectShowOptions$();
+  taskList$ = this.taskListStateService.selectTaskListData$();
+  showOptions$ = this.taskListCardStateService.selectShowOptions$();
 }

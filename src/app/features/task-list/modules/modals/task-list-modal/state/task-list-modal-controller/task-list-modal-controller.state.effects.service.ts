@@ -11,9 +11,9 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { GlobalStateStoreService } from 'src/app/core/state/global.state.store.service';
+import { GlobalStateService } from 'src/app/core/state/global.state.service';
 import { ITaskListWithTasksResponse } from 'src/app/features/task-list/data/interfaces/task-list.interface';
-import { HomeStateEffectsService } from 'src/app/features/task-list/state/home/home.state.effects.service';
+import { HomeEffectsService } from 'src/app/features/task-list/state/home/home.effects.service';
 import { getModalClass } from '../../data/functions/get-modal-class.function';
 import { ITaskListModalData } from '../../data/interfaces/task-list-modal-data.interface';
 import { TaskListModalComponent } from '../../task-list-modal.component';
@@ -21,10 +21,10 @@ import { TaskListModalComponent } from '../../task-list-modal.component';
 @Injectable({
   providedIn: 'root',
 })
-export class TaskListModalControllerStateEffectsService {
+export class TaskListModalControllerEffectsService {
   private modalService = inject(NzModalService);
-  private globalStateStoreService = inject(GlobalStateStoreService);
-  private homeStateEffectsService = inject(HomeStateEffectsService);
+  private globalStateService = inject(GlobalStateService);
+  private homeEffectsService = inject(HomeEffectsService);
 
   private refetchOnClose$ = new BehaviorSubject(false);
 
@@ -33,8 +33,8 @@ export class TaskListModalControllerStateEffectsService {
     switchMap(() => this.refetchOnClose$.asObservable().pipe(take(1))),
     filter((shouldRefetch) => !!shouldRefetch),
     exhaustMap(() => {
-      this.globalStateStoreService.setIsLoading(true);
-      return this.homeStateEffectsService.fetchTaskLists$().pipe(
+      this.globalStateService.setIsLoading(true);
+      return this.homeEffectsService.fetchTaskLists$().pipe(
         tap(() => {
           this.onRefetch();
         }),
@@ -70,7 +70,7 @@ export class TaskListModalControllerStateEffectsService {
   }
 
   private onRefetch(): void {
-    this.globalStateStoreService.setIsLoading(false);
+    this.globalStateService.setIsLoading(false);
     this.refetchOnClose$.next(false);
   }
 }

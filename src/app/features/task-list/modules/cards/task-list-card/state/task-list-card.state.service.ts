@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 
 @Injectable()
-export class TaskListCardStateStoreService {
+export class TaskListCardStateService {
   private isFixed$ = new BehaviorSubject(false);
   private isHovered$ = new BehaviorSubject(false);
 

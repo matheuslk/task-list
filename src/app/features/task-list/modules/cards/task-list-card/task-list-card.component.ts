@@ -13,14 +13,14 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { Subject, tap } from 'rxjs';
 import { ITaskListWithTasksResponse } from '../../../data/interfaces/task-list.interface';
-import { TaskListStateEffectsModel } from '../../../data/models/task-list.state.effects.model';
+import { TaskListEffectsModel } from '../../../data/models/task-list.state.effects.model';
 import { GetBgColorClassPipe } from '../../../pipes/get-bg-color-class.pipe';
-import { TaskListStateEffectsService } from '../../../state/task-list/task-list.state.effects.service';
-import { TaskListStateStoreService } from '../../../state/task-list/task-list.state.store.service';
-import { TaskListModalControllerStateEffectsService } from '../../modals/task-list-modal/state/task-list-modal-controller/task-list-modal-controller.state.effects.service';
+import { TaskListEffectsService } from '../../../state/task-list/task-list.effects.service';
+import { TaskListStateService } from '../../../state/task-list/task-list.state.service';
+import { TaskListModalControllerEffectsService } from '../../modals/task-list-modal/state/task-list-modal-controller/task-list-modal-controller.state.effects.service';
 import { TaskListCardFooterComponent } from './components/task-list-card-footer/task-list-card-footer.component';
 import { TaskListCardHeaderComponent } from './components/task-list-card-header/task-list-card-header.component';
-import { TaskListCardStateStoreService } from './state/task-list-card.state.store.service';
+import { TaskListCardStateService } from './state/task-list-card.state.service';
 
 const modules = [NzCardModule, NzTagModule];
 const components = [TaskListCardHeaderComponent, TaskListCardFooterComponent];
@@ -31,32 +31,32 @@ const pipes = [GetBgColorClassPipe];
   standalone: true,
   imports: [CommonModule, ...modules, ...components, ...pipes],
   providers: [
-    TaskListCardStateStoreService,
-    TaskListStateStoreService,
-    TaskListStateEffectsService,
+    TaskListCardStateService,
+    TaskListStateService,
+    TaskListEffectsService,
     {
-      provide: TaskListStateEffectsModel,
-      useExisting: TaskListStateEffectsService,
+      provide: TaskListEffectsModel,
+      useExisting: TaskListEffectsService,
     },
   ],
   templateUrl: './task-list-card.component.html',
   styleUrls: ['./task-list-card.component.less'],
 })
 export class TaskListCardComponent implements OnInit, OnChanges {
-  private taskListCardStateStoreService = inject(TaskListCardStateStoreService);
-  private taskListStateStoreService = inject(TaskListStateStoreService);
-  private taskListModalControllerStateEffectsService = inject(
-    TaskListModalControllerStateEffectsService,
+  private taskListCardStateService = inject(TaskListCardStateService);
+  private taskListStateService = inject(TaskListStateService);
+  private taskListModalControllerEffectsService = inject(
+    TaskListModalControllerEffectsService,
   );
 
   @HostListener('mouseenter')
   public mouseenterListener(): void {
-    this.taskListCardStateStoreService.setIsHovered(true);
+    this.taskListCardStateService.setIsHovered(true);
   }
 
   @HostListener('mouseleave')
   public mouseleaveListener(): void {
-    this.taskListCardStateStoreService.setIsHovered(false);
+    this.taskListCardStateService.setIsHovered(false);
   }
 
   @Input({ required: true }) taskList: ITaskListWithTasksResponse;
@@ -64,15 +64,15 @@ export class TaskListCardComponent implements OnInit, OnChanges {
   openModal$ = new Subject<void>();
   private openModalListener$ = this.openModal$.pipe(
     tap(() => {
-      this.taskListModalControllerStateEffectsService.create(this.taskList);
+      this.taskListModalControllerEffectsService.create(this.taskList);
     }),
     takeUntilDestroyed(),
   );
 
-  taskList$ = this.taskListStateStoreService.selectTaskListData$();
+  taskList$ = this.taskListStateService.selectTaskListData$();
 
   ngOnInit(): void {
-    this.taskListStateStoreService.setTaskList({
+    this.taskListStateService.setTaskList({
       data: this.taskList,
       isLoading: false,
     });
@@ -83,7 +83,7 @@ export class TaskListCardComponent implements OnInit, OnChanges {
     if (changes['taskList'].firstChange) {
       return;
     }
-    this.taskListStateStoreService.setTaskList({
+    this.taskListStateService.setTaskList({
       data: this.taskList,
       isLoading: false,
     });

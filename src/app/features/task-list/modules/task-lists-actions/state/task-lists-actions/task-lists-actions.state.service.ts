@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
-export class TaskListsActionsStateStoreService {
+export class TaskListsActionsStateService {
   private isStoringTaskList$: BehaviorSubject<boolean> = new BehaviorSubject(
     false,
   );
