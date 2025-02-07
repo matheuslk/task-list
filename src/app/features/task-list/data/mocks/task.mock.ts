@@ -1,4 +1,4 @@
-import { ITaskResponse } from '../interfaces/task-list.interface';
+import { ITaskResponse } from '../interfaces/task.interface';
 
 export const TASKS: ITaskResponse[] = [
   {

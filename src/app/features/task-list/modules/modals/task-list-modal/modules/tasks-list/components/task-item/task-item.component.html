@@ -1,0 +1,40 @@
+<div *ngIf="{ taskState: (taskState$ | async) } as data" class="task-item">
+  <div class="task-item__form">
+    <label
+      *ngIf="!!task && !isSelected"
+      nz-checkbox
+      [ngModel]="isChecked$ | async"
+      (ngModelChange)="isChecked$.next($event)"
+    ></label>
+    <input
+      #descriptionInput
+      placeholder="Adicione uma descrição"
+      nz-input
+      [ngModel]="description$ | async"
+      (ngModelChange)="description$.next($event)"
+      [nzBorderless]="!isSelected"
+      [disabled]="isSelected && !!data.taskState?.isLoading"
+      (click)="handleSelect.emit()"
+      (blur)="unselect$.next()"
+    />
+  </div>
+  <div *ngIf="isSelected" class="task-item__options">
+    <button
+      nz-button
+      nzType="primary"
+      (mousedown)="$event.preventDefault()"
+      (click)="handleSave()"
+    >
+      Salvar
+    </button>
+
+    <button
+      nz-button
+      nzType="default"
+      (mousedown)="$event.preventDefault()"
+      (click)="unselect$.next()"
+    >
+      Cancelar
+    </button>
+  </div>
+</div>

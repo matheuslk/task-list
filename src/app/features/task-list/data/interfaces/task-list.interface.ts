@@ -1,18 +1,10 @@
 import { Color } from '../types/color.type';
+import { ITaskResponse } from './task.interface';
 
 // REQUEST INTERFACES
 
 export interface ITaskListRequest {
-  id?: string;
-  title?: string;
-  isFixed?: boolean;
-  bgColor?: Color;
-}
-
-export interface ITaskRequest {
-  id?: string;
-  description: string;
-  isFinished?: boolean;
+  title: string;
 }
 
 // RESPONSE INTERFACES
@@ -21,16 +13,12 @@ export interface ITaskListsResponse {
   fixed: ITaskListWithTasksResponse[];
 }
 
-export interface ITaskListResponse
-  extends Pick<ITaskListRequest, 'bgColor'>,
-    Required<Omit<ITaskListRequest, 'bgColor'>> {}
+export interface ITaskListResponse extends ITaskListRequest {
+  id: string;
+  isFixed: boolean;
+  bgColor?: Color;
+}
 
 export interface ITaskListWithTasksResponse extends ITaskListResponse {
   tasks: ITaskResponse[];
-}
-
-export interface ITaskResponse
-  extends Pick<ITaskRequest, 'description'>,
-    Required<Omit<ITaskRequest, 'description'>> {
-  taskListId: string;
 }

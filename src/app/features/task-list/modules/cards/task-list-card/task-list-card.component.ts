@@ -52,6 +52,7 @@ export class TaskListCardComponent implements OnInit, OnChanges {
   @HostListener('mouseenter')
   public mouseenterListener(): void {
     this.taskListCardStateService.setIsHovered(true);
+    console.log('MOUSE ENTER - TASK LIST CARD');
   }
 
   @HostListener('mouseleave')
@@ -88,4 +89,9 @@ export class TaskListCardComponent implements OnInit, OnChanges {
       isLoading: false,
     });
   }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // ngDoCheck() {
+  //   console.log('ngDoCheck');
+  // }
 }

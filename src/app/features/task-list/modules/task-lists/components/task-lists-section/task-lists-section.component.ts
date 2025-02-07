@@ -2,10 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import {
-  ITaskListResponse,
-  ITaskListWithTasksResponse,
-} from 'src/app/features/task-list/data/interfaces/task-list.interface';
+import { ITaskListWithTasksResponse } from 'src/app/features/task-list/data/interfaces/task-list.interface';
+import { trackBy } from 'src/app/shared/data/functions/track-by.function';
 import { TaskListCardComponent } from '../../../cards/task-list-card/task-list-card.component';
 
 @Component({
@@ -16,6 +14,8 @@ import { TaskListCardComponent } from '../../../cards/task-list-card/task-list-c
   styleUrls: ['./task-lists-section.component.less'],
 })
 export class TaskListsSectionComponent {
+  trackByFn = trackBy;
+
   @Input({
     required: true,
   })
@@ -24,8 +24,4 @@ export class TaskListsSectionComponent {
   @Input() icon?: string;
   @Input() iconTheme: 'fill' | 'outline' = 'outline';
   @Input() showIcon = true;
-
-  trackList(index: number, taskList: ITaskListResponse): string {
-    return taskList.id;
-  }
 }

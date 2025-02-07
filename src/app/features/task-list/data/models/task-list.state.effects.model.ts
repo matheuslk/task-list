@@ -2,7 +2,6 @@ import { Directive, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   catchError,
-  EMPTY,
   exhaustMap,
   Observable,
   of,
@@ -13,7 +12,7 @@ import {
 } from 'rxjs';
 import { GlobalStateService } from 'src/app/core/state/global.state.service';
 import {
-  ITaskListRequest,
+  ITaskListResponse,
   ITaskListWithTasksResponse,
 } from '../../data/interfaces/task-list.interface';
 import { TaskListService } from '../../services/task-list.service';
@@ -27,9 +26,9 @@ export abstract class TaskListEffectsModel {
 
   protected taskList$ = this.taskListStateService.selectTaskListData$();
 
-  private updateTaskList$: Subject<ITaskListRequest> = new Subject();
+  private updateTaskList$: Subject<Partial<ITaskListResponse>> = new Subject();
   private updateTaskListListener$ = this.updateTaskList$.pipe(
-    exhaustMap((taskListRequest) => {
+    exhaustMap((updatedTaskList) => {
       this.taskListStateService.setTaskList({
         isLoading: true,
       });
@@ -38,7 +37,7 @@ export abstract class TaskListEffectsModel {
         switchMap((currentTaskList) => {
           const request = {
             ...currentTaskList,
-            ...taskListRequest,
+            ...updatedTaskList,
           };
           return this.taskListService
             .updateTaskList$(request)
@@ -65,12 +64,8 @@ export abstract class TaskListEffectsModel {
       }),
     );
   }
-  private updateTaskListOnError$(error: any): Observable<never> {
-    this.taskListStateService.setTaskList({
-      error,
-      isLoading: false,
-    });
-    return EMPTY;
+  private updateTaskListOnError$(error: any): Observable<any> {
+    return this.onError$(error);
   }
 
   private removeTaskList$: Subject<void> = new Subject();
@@ -100,12 +95,19 @@ export abstract class TaskListEffectsModel {
     );
   }
 
-  private removeTaskListOnError$(error: any): Observable<never> {
-    this.taskListStateService.setTaskList({
-      error,
-      isLoading: false,
-    });
-    return EMPTY;
+  private removeTaskListOnError$(error: any): Observable<any> {
+    return this.onError$(error);
+  }
+
+  private onError$(error: any): Observable<any> {
+    return of({}).pipe(
+      tap(() => {
+        this.taskListStateService.setTaskList({
+          isLoading: false,
+          error: error,
+        });
+      }),
+    );
   }
 
   protected loadingListener$ = this.taskListStateService
@@ -123,7 +125,7 @@ export abstract class TaskListEffectsModel {
     this.removeTaskListListener$.subscribe();
   }
 
-  updateTaskList(taskList: ITaskListRequest): void {
+  updateTaskList(taskList: Partial<ITaskListResponse>): void {
     this.updateTaskList$.next(taskList);
   }
 

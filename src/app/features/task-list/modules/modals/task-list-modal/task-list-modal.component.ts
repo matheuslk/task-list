@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { distinctUntilChanged, map, skip, tap } from 'rxjs';
 import { TaskListEffectsModel } from '../../../data/models/task-list.state.effects.model';
@@ -8,6 +9,7 @@ import { TaskListStateService } from '../../../state/task-list/task-list.state.s
 import { TaskListModalFooterComponent } from './components/task-list-modal-footer/task-list-modal-footer.component';
 import { TaskListModalHeaderComponent } from './components/task-list-modal-header/task-list-modal-header.component';
 import { getModalClass } from './data/functions/get-modal-class.function';
+import { TasksListComponent } from './modules/tasks-list/tasks-list.component';
 import { TaskListModalEffectsService } from './state/task-list-modal/task-list-modal.effects.service';
 import { TaskListModalStateService } from './state/task-list-modal/task-list-modal.state.service';
 
@@ -16,8 +18,10 @@ import { TaskListModalStateService } from './state/task-list-modal/task-list-mod
   imports: [
     CommonModule,
     NzModalModule,
+    NzButtonModule,
     TaskListModalHeaderComponent,
     TaskListModalFooterComponent,
+    TasksListComponent,
   ],
   providers: [
     TaskListModalStateService,
@@ -38,14 +42,16 @@ export class TaskListModalComponent implements OnInit {
   private readonly modalRef = inject(NzModalRef);
   private taskListModalStateService = inject(TaskListModalStateService);
 
-  private taskList$ = this.taskListModalStateService.selectTaskListData$();
+  taskList$ = this.taskListModalStateService.selectTaskListData$();
 
   private bgColorListener$ = this.taskList$.pipe(
+    tap((taskListData) => {
+      console.log('TASK LIST DATA', taskListData);
+    }),
     skip(1),
     map((taskList) => taskList.bgColor),
     distinctUntilChanged(),
     tap((bgColor) => {
-      console.log('bgColorListener - ', bgColor);
       this.modalRef.updateConfig({
         nzClassName: getModalClass(bgColor),
       });

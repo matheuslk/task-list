@@ -12,7 +12,7 @@
   <div class="section__task-lists">
     <div
       class="section__card-wrapper"
-      *ngFor="let taskList of taskLists; trackBy: trackList"
+      *ngFor="let taskList of taskLists; trackBy: trackByFn"
     >
       <app-task-list-card [taskList]="taskList"></app-task-list-card>
     </div>
