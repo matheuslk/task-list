@@ -7,8 +7,8 @@ import { LocalStorageKeysEnum } from './core/data/enums/local-storage-keys.enum'
 import { GlobalLoaderService } from './core/services/global-loader.service';
 import { LocalStorageService } from './core/services/local-storage.service';
 import { GlobalStateService } from './core/state/global.state.service';
-import { TaskListService } from './features/task-list/services/task-list.service';
-import { TaskService } from './features/task-list/services/task.service';
+import { TaskListService } from './features/task-list/shared/services/task-list.service';
+import { TaskService } from './features/task-list/components/task-list-modal/services/task.service';
 
 @Component({
   selector: 'app-root',

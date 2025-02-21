@@ -1,0 +1,24 @@
+@import 'ng-zorro-antd/style/themes/variable';
+
+.section {
+  &__title-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: @margin-sm;
+  }
+
+  &__title {
+    margin: 0 @margin-xs 0 @margin-md;
+  }
+
+  &__task-lists {
+    column-count: auto;
+    column-width: 240px;
+    column-gap: @padding-lg;
+  }
+
+  &__card-wrapper {
+    break-inside: avoid-column;
+    margin-bottom: @margin-md;
+  }
+}

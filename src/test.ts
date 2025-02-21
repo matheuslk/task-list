@@ -1,14 +1,12 @@
-import { MockService, ngMocks } from 'ng-mocks';
+import { MockInstance, MockService, ngMocks } from 'ng-mocks';
 
 import { CommonModule } from '@angular/common';
 import { ApplicationModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { MockInstance } from 'ng-mocks';
 import { LocalStorageKeysEnum } from 'src/app/core/data/enums/local-storage-keys.enum';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { TASK_LISTS } from 'src/app/features/task-list/data/mocks/task-list.mock';
-import { TASKS } from 'src/app/features/task-list/data/mocks/task.mock';
+import { TASK_LISTS } from 'src/app/features/task-list/shared/data/mocks/task-list.mock';
+import { TASKS } from 'src/app/features/task-list/shared/data/mocks/task.mock';
 
 import { getTestBed } from '@angular/core/testing';
 import {

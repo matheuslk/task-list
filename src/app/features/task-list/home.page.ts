@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, skip, take, tap } from 'rxjs/operators';
 
-import { TaskListModalComponent } from './modules/modals/task-list-modal/task-list-modal.component';
-import { TaskListsActionsComponent } from './modules/task-lists-actions/task-lists-actions.component';
-import { TaskListsComponent } from './modules/task-lists/task-lists.component';
-import { HomeEffectsService } from './state/home/home.effects.service';
-import { HomeStateService } from './state/home/home.state.service';
+import { TaskListModalComponent } from './components/task-list-modal/task-list-modal.component';
+import { TaskListsActionsComponent } from './components/task-lists-actions/task-lists-actions.component';
+import { TaskListsComponent } from './components/task-lists/task-lists.component';
+import { HomeEffectsService } from './shared/state/home/home.effects.service';
+import { HomeStateService } from './shared/state/home/home.state.service';
 
 const modules = [NzLayoutModule];
 const components = [
@@ -20,7 +20,7 @@ const components = [
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ...modules, ...components],
+  imports: [CommonModule, ...modules],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.less'],
 })
