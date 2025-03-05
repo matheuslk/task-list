@@ -62,7 +62,7 @@ export class TaskListService {
       return of({
         taskLists: taskListsWithTasks.filter((list) => !list.isFixed),
         fixed: taskListsWithTasks.filter((list) => list.isFixed),
-      }).pipe(delay(1000));
+      }).pipe(delay(100));
     });
   }
 
@@ -80,7 +80,7 @@ export class TaskListService {
             ),
           }) as ITaskListWithTasksResponse,
       ),
-      delay(1000),
+      delay(100),
     );
   }
 

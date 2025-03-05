@@ -20,7 +20,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import {
   BehaviorSubject,
   distinctUntilChanged,
-  filter,
   skip,
   Subject,
   switchMap,
@@ -32,17 +31,16 @@ import { TaskEffectsService } from '../../state/task/task.effects.service';
 import { ITaskListModalData } from '../../data/interfaces/task-list-modal-data.interface';
 import { NZ_MODAL_DATA } from 'ng-zorro-antd/modal';
 import { TaskStateService } from '../../state/task/task.state.service';
+import { RemoveIconComponent } from '../../../../shared/components/remove-icon/remove-icon.component';
+
+const modules = [FormsModule, NzCheckboxModule, NzInputModule, NzButtonModule];
+
+const components = [RemoveIconComponent];
 
 @Component({
   selector: 'app-task-item',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    NzCheckboxModule,
-    NzInputModule,
-    NzButtonModule,
-  ],
+  imports: [CommonModule, ...modules, ...components],
   templateUrl: './task-item.component.html',
   styleUrls: ['./task-item.component.less'],
 })
@@ -58,11 +56,16 @@ export class TaskItemComponent implements OnInit, OnChanges, AfterViewInit {
   description$ = new BehaviorSubject<string | undefined>(undefined);
   storeTask$ = new Subject<void>();
   updateTask$ = new Subject<void>();
+  removeTask$ = new Subject<string>();
   unselect$ = new Subject<void>();
-  private readonly nzModalData: ITaskListModalData = inject(NZ_MODAL_DATA);
+
   private taskStateService = inject(TaskStateService);
+
   taskState$ = this.taskStateService.selectTaskState$();
+
+  private readonly nzModalData: ITaskListModalData = inject(NZ_MODAL_DATA);
   private taskEffectsService = inject(TaskEffectsService);
+
   private storeTaskListener$ = this.storeTask$.pipe(
     tap(() => {
       this.taskEffectsService.storeTask({
@@ -84,20 +87,31 @@ export class TaskItemComponent implements OnInit, OnChanges, AfterViewInit {
     }),
     takeUntilDestroyed(),
   );
+  private removeTaskListener$ = this.removeTask$.pipe(
+    tap((id: string) => {
+      this.taskEffectsService.removeTask(id);
+    }),
+    takeUntilDestroyed(),
+  );
   private isCheckedListener$ = this.isChecked$.pipe(
     distinctUntilChanged(),
     skip(1),
     tap(() => {
-      this.updateTask$.next();
+      const request: ITaskResponse = {
+        ...(this.task as ITaskResponse),
+        isFinished: this.isChecked$.getValue() ?? false,
+      };
+      this.taskEffectsService.updateTask(request);
     }),
     takeUntilDestroyed(),
   );
   private unselectListener$ = this.unselect$.pipe(
     switchMap(() => this.taskState$.pipe(take(1))),
-    // Consider unselect only when task state is not loading to avoid dispatching unselect when input is disabled
-    filter((taskState) => !taskState.isLoading),
-    tap(() => {
-      this.setTaskValue();
+    tap((taskState) => {
+      // Reseta o valor da task no caso do usuário ter realizado alteração na descrição sem salvar
+      if (!taskState.isLoading) {
+        this.setTaskValue();
+      }
       this.handleUnselect.emit();
     }),
     takeUntilDestroyed(),
@@ -105,24 +119,17 @@ export class TaskItemComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     const taskChanges = changes['task'];
-    const isSelectedChanges = changes['isSelected'];
 
     if (taskChanges) {
+      // Mantém os valores atualizados ao inicializar o componente e sempre que houver atualização de valores
       this.setTaskValue();
-    }
-
-    if (
-      isSelectedChanges &&
-      this.isSelected &&
-      !isSelectedChanges.firstChange
-    ) {
-      this.descriptionInput.nativeElement.focus();
     }
   }
 
   ngOnInit(): void {
     this.storeTaskListener$.subscribe();
     this.updateTaskListener$.subscribe();
+    this.removeTaskListener$.subscribe();
     this.isCheckedListener$.subscribe();
     this.unselectListener$.subscribe();
   }

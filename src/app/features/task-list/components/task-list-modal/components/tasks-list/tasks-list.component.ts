@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ITaskResponse } from 'src/app/features/task-list/shared/data/interfaces/task.interface';
 import { TaskItemComponent } from '../task-item/task-item.component';
@@ -6,9 +6,6 @@ import { trackBy } from 'src/app/shared/data/functions/track-by.function';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { TaskEffectsService } from '../../state/task/task.effects.service';
 import { TaskStateService } from '../../state/task/task.state.service';
-import { TaskListModalStateService } from '../../state/task-list-modal/task-list-modal.state.service';
-import { filter, skip, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-tasks-list',
@@ -18,32 +15,25 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.less'],
 })
-export class TasksListComponent implements OnInit {
+export class TasksListComponent {
   trackByFn = trackBy;
 
   @Input({ required: true }) tasks: ITaskResponse[];
-
-  private taskListModalStateService = inject(TaskListModalStateService);
 
   selectedTaskId: string | null = null;
 
   isStoringTask = false;
 
-  private taskListState$ =
-    this.taskListModalStateService.selectTaskListState$();
+  handleSelectTask(taskId: string): void {
+    this.selectedTaskId = taskId;
+  }
 
-  // Reset 'selectedTaskId' and 'isStoringTask' every time 'taskList' is updated
-  private updatedTaskListListener$ = this.taskListState$.pipe(
-    skip(1),
-    filter((taskListState) => !taskListState.isLoading),
-    tap(() => {
-      this.selectedTaskId = null;
-      this.isStoringTask = false;
-    }),
-    takeUntilDestroyed(),
-  );
-
-  ngOnInit(): void {
-    this.updatedTaskListListener$.subscribe();
+  handleUnselectTask(taskId: string): void {
+    // O selecionamento de um novo item ocorre antes do desselecionamento do anterior, sendo assim, se faz necessária
+    // uma verificação a fim de garantir que o item desselecionado seja o mesmo que foi selecionado
+    if (this.selectedTaskId !== taskId) {
+      return;
+    }
+    this.selectedTaskId = null;
   }
 }

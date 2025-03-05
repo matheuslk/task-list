@@ -4,8 +4,8 @@
       *ngFor="let task of tasks; trackBy: trackByFn"
       [task]="task"
       [isSelected]="task.id === selectedTaskId"
-      (handleSelect)="selectedTaskId = task.id"
-      (handleUnselect)="selectedTaskId = null"
+      (handleSelect)="handleSelectTask(task.id)"
+      (handleUnselect)="handleUnselectTask(task.id)"
     ></app-task-item>
     <app-task-item
       *ngIf="isStoringTask"

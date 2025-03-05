@@ -1,10 +1,10 @@
 <div *ngIf="{ taskState: (taskState$ | async) } as data" class="task-item">
   <div class="task-item__form">
     <label
-      *ngIf="!!task && !isSelected"
+      *ngIf="!!task"
       nz-checkbox
       [ngModel]="isChecked$ | async"
-      (ngModelChange)="isChecked$.next($event)"
+      (mousedown)="isChecked$.next(!isChecked$.getValue())"
     ></label>
     <input
       #descriptionInput
@@ -13,28 +13,29 @@
       [ngModel]="description$ | async"
       (ngModelChange)="description$.next($event)"
       [nzBorderless]="!isSelected"
-      [disabled]="isSelected && !!data.taskState?.isLoading"
-      (click)="handleSelect.emit()"
+      [readOnly]="!isSelected"
+      (mousedown)="handleSelect.emit()"
       (blur)="unselect$.next()"
     />
+    <app-remove-icon
+      *ngIf="!!task"
+      class="task-item__remove-icon"
+      [ngClass]="{
+        'task-item__remove-icon--selected': isSelected
+      }"
+      (mousedown)="removeTask$.next(task.id)"
+    ></app-remove-icon>
   </div>
   <div *ngIf="isSelected" class="task-item__options">
     <button
       nz-button
       nzType="primary"
-      (mousedown)="$event.preventDefault()"
-      (click)="handleSave()"
+      [disabled]="!(description$ | async)?.length"
+      (mousedown)="handleSave()"
     >
       Salvar
     </button>
 
-    <button
-      nz-button
-      nzType="default"
-      (mousedown)="$event.preventDefault()"
-      (click)="unselect$.next()"
-    >
-      Cancelar
-    </button>
+    <button nz-button nzType="default">Cancelar</button>
   </div>
 </div>

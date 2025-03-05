@@ -38,7 +38,7 @@ export class TaskService {
 
     this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
 
-    return of(newTask).pipe(delay(2000));
+    return of(newTask).pipe(delay(200));
   }
 
   updateTask$(updatedTask: ITaskResponse): Observable<ITaskResponse> {
@@ -55,7 +55,7 @@ export class TaskService {
 
     this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
 
-    return of(updatedTask).pipe(delay(2000));
+    return of(updatedTask).pipe(delay(200));
   }
 
   removeTask$(id: string): Observable<ITaskResponse> {
@@ -71,6 +71,6 @@ export class TaskService {
 
     this.localStorageService.setItem(LocalStorageKeysEnum.TASKS, tasks);
 
-    return of(removedTask).pipe(delay(2000));
+    return of(removedTask).pipe(delay(200));
   }
 }

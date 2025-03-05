@@ -4,23 +4,17 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, skip, take, tap } from 'rxjs/operators';
-
-import { TaskListModalComponent } from './components/task-list-modal/task-list-modal.component';
 import { TaskListsActionsComponent } from './components/task-lists-actions/task-lists-actions.component';
 import { TaskListsComponent } from './components/task-lists/task-lists.component';
 import { HomeEffectsService } from './shared/state/home/home.effects.service';
 import { HomeStateService } from './shared/state/home/home.state.service';
 
 const modules = [NzLayoutModule];
-const components = [
-  TaskListsActionsComponent,
-  TaskListsComponent,
-  TaskListModalComponent,
-];
+const components = [TaskListsActionsComponent, TaskListsComponent];
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ...modules],
+  imports: [CommonModule, ...modules, ...components],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.less'],
 })

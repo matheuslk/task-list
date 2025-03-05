@@ -45,9 +45,6 @@ export class TaskListModalComponent implements OnInit {
   taskList$ = this.taskListModalStateService.selectTaskListData$();
 
   private bgColorListener$ = this.taskList$.pipe(
-    tap((taskListData) => {
-      console.log('TASK LIST DATA', taskListData);
-    }),
     skip(1),
     map((taskList) => taskList.bgColor),
     distinctUntilChanged(),

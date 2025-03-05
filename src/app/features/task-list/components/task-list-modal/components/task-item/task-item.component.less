@@ -5,6 +5,15 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    column-gap: @padding-xs;
+  }
+
+  &__remove-icon {
+    display: none;
+
+    &--selected {
+      display: block;
+    }
   }
 
   &__options {
@@ -12,5 +21,13 @@
     display: flex;
     column-gap: @padding-xs;
     margin-top: @margin-xs;
+  }
+}
+
+.task-item:hover {
+  .task-item {
+    &__remove-icon {
+      display: block;
+    }
   }
 }
