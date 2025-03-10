@@ -42,7 +42,7 @@ export class TaskListModalHeaderComponent implements OnInit {
   title$ = new BehaviorSubject('');
   private titleChangeListener$ = this.title$.pipe(
     skip(2),
-    debounceTime(300),
+    debounceTime(400),
     distinctUntilChanged(),
     tap((title) => {
       this.taskListModalEffectsService.updateTaskList({
