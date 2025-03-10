@@ -1,0 +1,33 @@
+@import 'ng-zorro-antd/style/themes/variable';
+
+.task-item {
+  &__form {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    column-gap: @padding-xs;
+  }
+
+  &__remove-icon {
+    display: none;
+
+    &--selected {
+      display: block;
+    }
+  }
+
+  &__options {
+    width: 100%;
+    display: flex;
+    column-gap: @padding-xs;
+    margin-top: @margin-xs;
+  }
+}
+
+.task-item:hover {
+  .task-item {
+    &__remove-icon {
+      display: block;
+    }
+  }
+}

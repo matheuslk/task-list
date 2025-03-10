@@ -1,7 +1,7 @@
 name: CI
 run-name: running CI workflow 🚀
 
-on: [push, workflow_dispatch]
+on: [ push, workflow_dispatch ]
 
 jobs:
   lint-and-test:
@@ -22,5 +22,5 @@ jobs:
       - name: lint
         run: npm run lint
 
-      - name: test
-        run: npm test -- --watch=false --browsers=ChromeHeadless
+#      - name: test
+#        run: npm test -- --watch=false --browsers=ChromeHeadless

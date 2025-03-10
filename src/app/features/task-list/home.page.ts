@@ -1,22 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, skip, take, tap } from 'rxjs/operators';
-
-import { TaskListModalComponent } from './modules/modals/task-list-modal/task-list-modal.component';
-import { TaskListsActionsComponent } from './modules/task-lists-actions/task-lists-actions.component';
-import { TaskListsComponent } from './modules/task-lists/task-lists.component';
-import { HomeStateEffectsService } from './state/home/home.state.effects.service';
-import { HomeStateStoreService } from './state/home/home.state.store.service';
+import { TaskListsActionsComponent } from './components/task-lists-actions/task-lists-actions.component';
+import { TaskListsComponent } from './components/task-lists/task-lists.component';
+import { HomeEffectsService } from './shared/state/home/home.effects.service';
+import { HomeStateService } from './shared/state/home/home.state.service';
 
 const modules = [NzLayoutModule];
-const components = [
-  TaskListsActionsComponent,
-  TaskListsComponent,
-  TaskListModalComponent,
-];
+const components = [TaskListsActionsComponent, TaskListsComponent];
 
 @Component({
   standalone: true,
@@ -25,10 +19,10 @@ const components = [
   styleUrls: ['./home.page.less'],
 })
 export class HomePage implements OnInit {
-  homeStateStoreService = inject(HomeStateStoreService);
-  homeStateEffectsService = inject(HomeStateEffectsService);
+  homeStateService = inject(HomeStateService);
+  homeEffectsService = inject(HomeEffectsService);
 
-  taskLists$ = this.homeStateStoreService.selectTaskLists$();
+  taskLists$ = this.homeStateService.selectTaskLists$();
 
   // TODO: Verificar possibilidade de remover trecho de código do componente e deixar apenas nos effects
   private initialLoadingListener$ = this.taskLists$.pipe(
@@ -36,7 +30,7 @@ export class HomePage implements OnInit {
     filter((response) => !response.isLoading),
     take(1),
     tap(() => {
-      this.homeStateStoreService.setIsInitialLoading(false);
+      this.homeStateService.setIsInitialLoading(false);
     }),
     takeUntilDestroyed(),
   );
@@ -51,6 +45,6 @@ export class HomePage implements OnInit {
   }
 
   private setData(): void {
-    this.homeStateEffectsService.getTaskLists();
+    this.homeEffectsService.getTaskLists();
   }
 }

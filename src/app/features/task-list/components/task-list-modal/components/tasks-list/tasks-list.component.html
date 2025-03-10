@@ -1,0 +1,26 @@
+<div class="tasks-list">
+  <div class="tasks-list__tasks">
+    <app-task-item
+      *ngFor="let task of tasks; trackBy: trackByFn"
+      [task]="task"
+      [isSelected]="task.id === selectedTaskId"
+      (handleSelect)="handleSelectTask(task.id)"
+      (handleUnselect)="handleUnselectTask(task.id)"
+    ></app-task-item>
+    <app-task-item
+      *ngIf="isStoringTask"
+      [isSelected]="true"
+      (handleUnselect)="isStoringTask = false"
+    ></app-task-item>
+  </div>
+
+  <button
+    *ngIf="!isStoringTask && !selectedTaskId"
+    class="tasks-list__add-task-button"
+    nz-button
+    nzType="primary"
+    (click)="isStoringTask = true"
+  >
+    Adicionar tarefa
+  </button>
+</div>

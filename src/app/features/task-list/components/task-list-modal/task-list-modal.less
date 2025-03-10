@@ -1,0 +1,11 @@
+@import '../../../../../styles/variables/colors.less';
+
+.task-list-modal {
+  each(@bg-colors, {
+    &--bg-@{key} {
+      .ant-modal-header, .ant-modal-content {
+        background-color: @value;
+      }
+    }
+  });
+}

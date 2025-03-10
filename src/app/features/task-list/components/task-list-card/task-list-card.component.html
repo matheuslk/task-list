@@ -1,0 +1,21 @@
+<nz-card
+  *ngIf="{
+    taskList: (taskList$ | async)
+  } as data"
+  class="task-list-card"
+  [ngClass]="data.taskList?.bgColor | getBgColorClass"
+  [nzTitle]="header"
+  (click)="openModal$.next()"
+>
+  <div class="task-list-card__content">
+    <div *ngFor="let task of data.taskList?.tasks?.slice(0, 5)" class="task">
+      <p class="task__description">{{ task.description }}</p>
+      <nz-tag class="task__tag" nzColor="default">A fazer</nz-tag>
+    </div>
+  </div>
+  <app-task-list-card-footer></app-task-list-card-footer>
+</nz-card>
+
+<ng-template #header>
+  <app-task-list-card-header></app-task-list-card-header>
+</ng-template>

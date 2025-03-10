@@ -1,0 +1,30 @@
+@import 'ng-zorro-antd/style/themes/variable';
+
+.task-list-card {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    row-gap: @margin-sm;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.task {
+  display: flex;
+  justify-content: space-between;
+
+  &__description {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  &__tag {
+    margin-left: @margin-sm;
+    margin-right: 0;
+  }
+}

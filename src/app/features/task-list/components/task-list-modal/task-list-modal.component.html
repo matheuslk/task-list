@@ -1,0 +1,5 @@
+<ng-container *ngIf="{ taskList: (taskList$ | async) } as data">
+  <app-tasks-list [tasks]="data.taskList?.tasks ?? []"></app-tasks-list>
+</ng-container>
+<app-task-list-modal-header *nzModalTitle></app-task-list-modal-header>
+<app-task-list-modal-footer *nzModalFooter></app-task-list-modal-footer>
