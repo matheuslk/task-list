@@ -7,7 +7,7 @@
     nz-input
     nzBorderless
     [ngModel]="title$ | async"
-    [disabled]="!!data.taskListState?.isLoading"
+    [readonly]="!!data.taskListState?.isLoading"
     (ngModelChange)="title$.next($event)"
   />
 
