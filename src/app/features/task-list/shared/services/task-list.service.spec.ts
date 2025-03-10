@@ -59,7 +59,6 @@ fdescribe(TaskListService.name, () => {
     taskListService
       .storeTaskList$({
         title: 'new task list',
-        isFixed: false,
       })
       .pipe(
         tap((taskList) => {
