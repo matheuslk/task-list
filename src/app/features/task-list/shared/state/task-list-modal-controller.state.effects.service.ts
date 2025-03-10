@@ -60,6 +60,7 @@ export class TaskListModalControllerEffectsService {
       nzData: modalData,
       nzMaskClosable: true,
       nzClosable: false,
+      nzKeyboard: false,
       nzAfterClose: this.close$,
       nzClassName: getModalClass(taskList.bgColor),
     });
