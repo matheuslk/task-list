@@ -71,14 +71,6 @@ export class TaskListCardComponent implements OnInit, OnChanges {
 
   taskList$ = this.taskListStateService.selectTaskListData$();
 
-  ngOnInit(): void {
-    this.taskListStateService.setTaskList({
-      data: this.taskList,
-      isLoading: false,
-    });
-    this.openModalListener$.subscribe();
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['taskList'].firstChange) {
       return;
@@ -87,5 +79,13 @@ export class TaskListCardComponent implements OnInit, OnChanges {
       data: this.taskList,
       isLoading: false,
     });
+  }
+
+  ngOnInit(): void {
+    this.taskListStateService.setTaskList({
+      data: this.taskList,
+      isLoading: false,
+    });
+    this.openModalListener$.subscribe();
   }
 }

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { TaskListCardStateService } from '../../../components/task-list-card/state/task-list-card.state.service';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ColorPopoverComponent } from './components/color-popover/color-popover.component';
 import { PinTaskListComponent } from './components/pin-task-list/pin-task-list.component';
 import { PreventClickBubblingDirective } from '../../directives/prevent-click-bubbling.directive';
@@ -17,13 +16,5 @@ const directives = [PreventClickBubblingDirective];
   styleUrls: ['./task-list-options.component.less'],
 })
 export class TaskListOptionsComponent {
-  private taskListCardStateService = inject(TaskListCardStateService, {
-    optional: true,
-  });
-
-  handleVisibilityChange(isVisible: boolean): void {
-    if (this.taskListCardStateService) {
-      this.taskListCardStateService.setIsFixed(isVisible);
-    }
-  }
+  @Output() visibilityChange = new EventEmitter<boolean>();
 }

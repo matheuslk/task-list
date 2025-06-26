@@ -9,7 +9,10 @@
   </h5>
 
   <div class="task-list-header__options">
-    <app-task-list-options *ngIf="showOptions$ | async"></app-task-list-options>
+    <app-task-list-options
+      *ngIf="showOptions$ | async"
+      (visibilityChange)="handleVisibilityChange($event)"
+    ></app-task-list-options>
     <nz-badge
       *ngIf="data.taskList?.tasks?.length"
       nzStandalone

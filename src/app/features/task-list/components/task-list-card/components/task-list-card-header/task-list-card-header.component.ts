@@ -22,4 +22,8 @@ export class TaskListCardHeaderComponent {
 
   taskList$ = this.taskListStateService.selectTaskListData$();
   showOptions$ = this.taskListCardStateService.selectShowOptions$();
+
+  handleVisibilityChange(isVisible: boolean): void {
+    this.taskListCardStateService.setIsFixed(isVisible);
+  }
 }
